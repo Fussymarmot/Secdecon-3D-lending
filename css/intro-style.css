@@ -1,0 +1,111 @@
+.noise{
+    position:fixed;
+    inset:0;
+    z-index:10;
+    pointer-events:none;
+    opacity:.085;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.intro{
+    position:relative;
+    min-height:790px;
+    height:100svh;
+    max-height:1100px;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    padding:100px 8.5vw 80px;
+    background:radial-gradient(ellipse at 76% 53%,#17401f 0,transparent 42%),radial-gradient(ellipse at 50% 100%,#0b191a 0,transparent 55%),#05090b;
+}
+
+.intro-grid{
+    position:absolute;
+    inset:0;
+    opacity:.09;
+    transform:rotate(-2.2deg) scale(1.15);
+    transform-origin:30% 40%;
+    background-image:linear-gradient(rgba(142,255,187,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(142,255,187,.12) 1px,transparent 1px);
+    background-size:65px 65px;
+    mask-image:linear-gradient(90deg,transparent,#000 65%);
+}
+
+.intro-copy{
+    position:relative;
+    z-index:3;
+    width:52%;
+    max-width:650px;
+    margin-top:12px;
+}
+
+.status-dot{
+    display:inline-block;
+    width:6px;
+    height:6px;
+    background:var(--green);
+    border-radius:50%;
+    margin-right:9px;
+}
+
+.intro-description{
+    max-width:380px;
+    color:#9aada5;
+    font-size:15px;
+    line-height:1.65;
+}
+.round-link{
+    display:inline-flex;
+    align-items:center;
+    gap:26px;
+    margin-top:38px;
+    padding:10px 10px 10px 18px;
+    border:2px solid var(--green);
+    border-radius:6px;
+    background:#0d140f;
+    color:var(--text);
+    text-decoration:none;
+    font:500 11px var(--font-mono);
+    letter-spacing:.06em;
+    box-shadow:5px 5px 0 var(--green);
+    transform:rotate(-1.2deg);
+    transition:transform .15s,box-shadow .15s;
+}
+
+.round-link:hover{
+    transform:rotate(-1.2deg) translate(3px,3px);
+    box-shadow:2px 2px 0 var(--green);
+}
+
+.round-link b{
+    display:grid;
+    place-items:center;
+    width:32px;
+    height:32px;
+    border-radius:4px;
+    background:var(--green);
+    color:#08100a;
+    font-size:17px;
+}
+
+@media(max-width:650px){
+    .intro{
+        align-items:flex-start;
+        min-height:720px;
+        padding:90px 6vw 60px;
+    }
+
+    .intro-copy{
+        width:100%;
+        max-width:none;
+        margin-top:16px;
+    }
+
+    h1{
+        font-size:clamp(40px,15vw,96px);
+        margin:20px 0;
+    }
+
+    .intro-description{
+        max-width:320px;
+    }
+}

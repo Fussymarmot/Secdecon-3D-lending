@@ -1,0 +1,150 @@
+.portal-stage{
+    position:absolute;
+    right:3vw;
+    top:50%;
+    width:min(48vw,520px);
+    aspect-ratio:5/7;
+    transform:translateY(-48%);
+    animation:portal-arrive 1.4s cubic-bezier(.15,.7,.2,1) both;
+}
+
+.portal-aura{
+    position:absolute;
+    left:-10%;
+    top:-6%;
+    width:120%;
+    height:112%;
+    border-radius:50%;
+    background:radial-gradient(ellipse,rgba(120,255,70,.5) 0,rgba(60,210,60,.22) 38%,transparent 66%);
+    filter:blur(26px);
+    animation:aura-pulse 4s ease-in-out infinite;
+}
+
+@keyframes aura-pulse{
+    0%,100%{
+        opacity:.72;
+        transform:scale(.94);
+    }
+    50%{
+        opacity:1;
+        transform:scale(1.06);
+    }
+}
+
+.portal-body{
+    position:absolute;
+    inset:0;
+    transform:rotate(6deg);
+    animation:portal-float 7s ease-in-out infinite;
+}
+
+@keyframes portal-float{
+    0%,100%{transform:rotate(6deg) translateY(0)}
+    50%{transform:rotate(4.5deg) translateY(-9px)}
+}
+
+@keyframes portal-arrive{
+    from{
+        opacity:0;
+        transform:translateY(-48%) scale(.08) rotate(-40deg);
+    }
+    to{
+        opacity:1;
+        transform:translateY(-48%) scale(1) rotate(0);
+    }
+}
+
+.portal-layer{
+    position:absolute;
+    inset:0;
+}
+
+.portal-layer svg,
+.portal-swirl-spin svg{
+    display:block;
+    width:100%;
+    height:100%;
+    overflow:visible;
+}
+
+/* Спираль */
+.portal-swirl-oval{
+    position:absolute;
+    left:26%;
+    top:21.43%;
+    width:48%;
+    height:57.14%;
+    border-radius:50%;
+    overflow:hidden;
+}
+
+.portal-swirl-spin{
+    position:absolute;
+    left:0;
+    top:50%;
+    width:100%;
+    aspect-ratio:1;
+    transform-origin:50% 50%;
+    transform:translateY(-50%) scaleY(1.6667);
+    will-change:transform;
+}
+
+.spin-a{animation:swirl-spin 16s linear infinite}
+.spin-b{animation:swirl-spin 9s linear infinite reverse;opacity:.8}
+
+@keyframes swirl-spin{
+    from{transform:translateY(-50%) scaleY(1.6667) rotate(0deg)}
+    to{transform:translateY(-50%) scaleY(1.6667) rotate(360deg)}
+}
+
+.portal-rim,.portal-sparkles{pointer-events:none}
+
+/* мерцание брызг */
+.sparkle{
+    transform-box:fill-box;
+    transform-origin:center;
+    animation:twinkle var(--t,3.4s) ease-in-out infinite;
+    animation-delay:var(--d,0s);
+}
+
+@keyframes twinkle{
+    0%,100%{opacity:1;transform:scale(1)}
+    50%{opacity:.5;transform:scale(.65)}
+}
+
+@media(max-width:850px){
+    .portal-stage{width:min(70vw,460px);right:-12vw;opacity:.9}
+}
+
+@media(max-width:650px){
+    .intro{
+        flex-direction:column;
+        height:auto;
+        max-height:none;
+        min-height:100svh;
+        padding-top:64px;
+        padding-bottom:56px;
+    }
+
+    .portal-stage{
+        order:-1;
+        position:relative;
+        right:auto;
+        top:auto;
+        align-self:center;
+        width:min(76vw,400px);
+        margin:-6vw 0 -20vw;
+        transform:none;
+        opacity:1;
+        animation-name:portal-arrive-flow;
+    }
+}
+
+@keyframes portal-arrive-flow{
+    from{opacity:0;transform:scale(.08) rotate(-40deg)}
+    to{opacity:1;transform:scale(1) rotate(0)}
+}
+
+@media(prefers-reduced-motion:reduce){
+    .portal-stage,.portal-aura,.portal-body,.spin-a,.spin-b,.sparkle{animation:none}
+}

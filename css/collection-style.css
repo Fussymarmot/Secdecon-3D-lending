@@ -1,0 +1,410 @@
+[hidden]{display:none!important}
+
+/* ---------- кнопки ---------- */
+.btn{
+    display:inline-flex;
+    align-items:center;
+    gap:14px;
+    padding:13px 18px;
+    border:2px solid var(--green);
+    border-radius:6px;
+    background:#0d140f;
+    color:var(--text);
+    font:500 13px/1 var(--font-mono);
+    letter-spacing:.04em;
+    box-shadow:5px 5px 0 var(--green);
+    cursor:pointer;
+    transform:rotate(-1.2deg);
+    transition:transform .15s,box-shadow .15s;
+}
+.btn:hover{transform:rotate(-1.2deg) translate(3px,3px);box-shadow:2px 2px 0 var(--green)}
+.btn:focus-visible{outline:2px solid var(--cyan);outline-offset:5px}
+.btn b{
+    display:grid;
+    place-items:center;
+    width:26px;
+    height:26px;
+    margin:-5px -7px -5px 0;
+    border-radius:4px;
+    background:var(--green);
+    color:#08100a;
+    font-size:15px;
+}
+.btn--fill{background:var(--green);color:#08100a}
+.btn--small{padding:11px 14px;font-size:12px;box-shadow:4px 4px 0 rgba(168,232,74,.55)}
+.btn:disabled{opacity:.55;cursor:progress}
+
+.h2-tilt{
+    position:relative;
+    display:inline-block;
+    transform:translateX(.3em) rotate(-2deg);
+}
+
+/* ---------- раздел с моделью ---------- */
+.collection{position:relative}
+
+.gun{
+    position:relative;
+    display:grid;
+    grid-template-columns:minmax(0,5fr) minmax(0,6fr);
+    gap:clamp(28px,4.5vw,72px);
+    align-items:center;
+    padding:104px 8.5vw 80px;
+    border-top:1px solid rgba(255,255,255,.14);
+    background:radial-gradient(ellipse at 72% 50%,rgba(40,120,40,.16) 0,transparent 55%),var(--bg);
+}
+.gun:nth-child(even){grid-template-columns:minmax(0,6fr) minmax(0,5fr)}
+.gun:nth-child(even) .gun-stage{order:-1}
+
+.gun h2{
+    font-size:clamp(52px,6.6vw,110px);
+    margin:0 0 30px;
+}
+.gun-lead{
+    max-width:430px;
+    color:#a9bbb3;
+    font-size:16px;
+    line-height:1.65;
+}
+.gun-facts{
+    list-style:none;
+    padding:0;
+    margin:26px 0 0;
+    display:grid;
+    gap:10px;
+    max-width:430px;
+}
+.gun-facts li{
+    padding-left:20px;
+    position:relative;
+    color:var(--text);
+    font-size:14px;
+    line-height:1.45;
+}
+.gun-facts li::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:.45em;
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:var(--green);
+    box-shadow:0 0 8px var(--green);
+}
+
+/* список деталей — появляется вместо фактов, когда пушка разобрана */
+.gun-parts{
+    display:none;
+    list-style:none;
+    padding:0;
+    margin:22px 0 0;
+    gap:2px;
+    max-width:460px;
+}
+.gun.is-open .gun-facts{display:none}
+.gun.is-open .gun-parts{display:grid;animation:parts-in .35s ease-out both}
+@keyframes parts-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.part{
+    width:100%;
+    display:grid;
+    gap:3px;
+    padding:10px 14px;
+    border:0;
+    border-left:2px solid rgba(255,255,255,.18);
+    background:transparent;
+    color:var(--text);
+    text-align:left;
+    cursor:default;
+    transition:border-color .2s,background .2s;
+}
+.part b{font:700 17px/1.1 var(--font-head);text-transform:uppercase;letter-spacing:.02em}
+.part span{font-size:13px;line-height:1.45;color:#93a69e}
+.part:hover,.part:focus-visible{border-left-color:var(--green);background:rgba(168,232,74,.07);outline:none}
+
+.gun-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:22px 24px;
+    margin-top:34px;
+}
+
+/* ---------- сцена с моделью ---------- */
+.gun-stage,.card-stage{
+    position:relative;
+    overflow:hidden;
+    background:
+        radial-gradient(ellipse at 50% 62%,rgba(90,220,70,.24) 0,transparent 60%),
+        linear-gradient(rgba(142,255,187,.06) 1px,transparent 1px) 0 0/48px 48px,
+        linear-gradient(90deg,rgba(142,255,187,.06) 1px,transparent 1px) 0 0/48px 48px,
+        #070d0f;
+}
+.gun-stage{
+    width:100%;
+    aspect-ratio:1/1;
+    max-height:80svh;
+    border:1px solid rgba(255,255,255,.16);
+    cursor:grab;
+}
+.gun-stage:active{cursor:grabbing}
+.gl{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+}
+.gun-hint{
+    position:absolute;
+    left:16px;
+    bottom:14px;
+    z-index:2;
+    margin:0;
+    font:400 11px/1.3 var(--font-mono);
+    color:var(--muted);
+    pointer-events:none;
+    transition:opacity .4s;
+}
+.gun-stage.is-touched .gun-hint{opacity:0}
+
+.gun-stage.is-loading::after,
+.card-stage.is-loading::after,
+.gun-stage[data-state]::after,
+.card-stage[data-state]::after{
+    position:absolute;
+    inset:0;
+    display:grid;
+    place-items:center;
+    padding:24px;
+    text-align:center;
+    font:400 12px/1.5 var(--font-mono);
+    color:var(--green);
+    pointer-events:none;
+}
+.gun-stage.is-loading::after,.card-stage.is-loading::after{content:"Загружаем модель…";animation:blink 1.4s ease-in-out infinite}
+.gun-stage[data-state=error]::after,.card-stage[data-state=error]::after{content:"Не получилось загрузить модель. Если открыл файл напрямую — запусти сайт через локальный сервер (см. README).";color:var(--amber)}
+.gun-stage[data-state=nogl]::after,.card-stage[data-state=nogl]::after{content:"В этом браузере не работает WebGL, поэтому 3D-модель показать не получится.";color:var(--amber)}
+@keyframes blink{50%{opacity:.35}}
+
+/* ---------- ряд пушек ---------- */
+.gallery{
+    padding:104px 8.5vw 120px;
+    border-top:1px solid rgba(255,255,255,.14);
+    background:radial-gradient(ellipse at 50% 100%,#12331a 0,transparent 60%),var(--bg);
+}
+.gallery h2{font-size:clamp(52px,6.6vw,110px);margin:0 0 26px}
+.gallery-lead{max-width:440px;color:#a9bbb3;font-size:16px;line-height:1.65}
+.gallery-row{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:22px;
+    margin-top:48px;
+}
+.card{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    border:1px solid rgba(255,255,255,.18);
+    background:var(--panel);
+    cursor:pointer;
+    transition:transform .15s,box-shadow .15s,border-color .15s;
+}
+.card:not(.is-soon):hover,.card.is-picked{
+    border-color:var(--green);
+    box-shadow:6px 6px 0 var(--green);
+    transform:translate(-3px,-3px);
+}
+.card-stage{aspect-ratio:4/5;border-bottom:1px solid rgba(255,255,255,.12)}
+.card-body{display:grid;gap:6px;padding:16px 16px 20px;justify-items:start}
+.card-name{font:700 24px/1 var(--font-head);text-transform:uppercase;letter-spacing:.01em}
+.card-meta{font:400 12px var(--font-mono);color:var(--muted)}
+.card-price{margin:4px 0 8px;font:700 20px/1 var(--font-head);color:var(--green)}
+.card-price--off{color:var(--muted)}
+.card.is-soon{border-style:dashed;cursor:default;opacity:.72}
+.card-soon{
+    position:absolute;
+    left:50%;
+    top:50%;
+    z-index:2;
+    padding:6px 10px 5px;
+    background:var(--sticker);
+    color:#14130a;
+    font:500 12px/1 var(--font-mono);
+    transform:translate(-50%,-50%) rotate(-6deg);
+    box-shadow:2px 3px 0 rgba(0,0,0,.5);
+}
+
+/* «выстрел» при наведении: из ствола раскрывается зелёное кольцо */
+.card-shot{
+    position:absolute;
+    left:30%;
+    top:46%;
+    z-index:1;
+    width:30%;
+    aspect-ratio:3/4;
+    border:3px solid var(--green);
+    border-radius:50%;
+    box-shadow:0 0 18px var(--green),inset 0 0 14px rgba(168,232,74,.6);
+    opacity:0;
+    pointer-events:none;
+    transform:translate(-50%,-50%) scale(.1);
+}
+.card-shot.is-firing{animation:shot .8s ease-out}
+@keyframes shot{
+    0%{opacity:0;transform:translate(-50%,-50%) scale(.1)}
+    25%{opacity:1}
+    100%{opacity:0;transform:translate(-50%,-50%) scale(1.5)}
+}
+
+/* ---------- окно покупки ---------- */
+.buy{
+    margin:auto;
+    width:min(940px,calc(100vw - 24px));
+    max-height:calc(100svh - 24px);
+    padding:0;
+    border:2px solid var(--green);
+    background:var(--panel);
+    color:var(--text);
+    box-shadow:10px 10px 0 var(--green);
+    overflow:auto;
+}
+.buy::backdrop{background:rgba(3,6,7,.78);backdrop-filter:blur(3px)}
+.buy[open]{animation:buy-in .22s ease-out}
+@keyframes buy-in{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+.buy-close{
+    position:absolute;
+    right:12px;
+    top:12px;
+    z-index:2;
+    width:36px;
+    height:36px;
+    border:1px solid rgba(255,255,255,.25);
+    border-radius:4px;
+    background:transparent;
+    color:var(--text);
+    font-size:15px;
+    cursor:pointer;
+}
+.buy-close:hover{border-color:var(--green);color:var(--green)}
+.buy-close:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.buy-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr)}
+.buy-side{
+    padding:36px 32px;
+    border-right:1px solid rgba(255,255,255,.14);
+    background:radial-gradient(ellipse at 50% 0,rgba(60,170,50,.22) 0,transparent 70%),#08100f;
+}
+.buy-side h2{font-size:clamp(44px,5vw,64px);margin-bottom:26px}
+.buy-main{padding:36px 32px}
+
+.choices{border:0;padding:0;margin:0 0 22px}
+.choices legend,.qty-label{display:block;margin-bottom:10px;font:400 12px var(--font-mono);color:var(--muted);padding:0}
+.choice{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 14px;
+    margin-bottom:8px;
+    border:1px solid rgba(255,255,255,.18);
+    cursor:pointer;
+    transition:border-color .15s,background .15s;
+}
+.choice:hover{border-color:rgba(168,232,74,.6)}
+.choice:has(input:checked){border-color:var(--green);background:rgba(168,232,74,.09)}
+.choice:has(input:focus-visible){outline:2px solid var(--cyan);outline-offset:2px}
+.choice input{accent-color:var(--green);width:16px;height:16px;margin:0}
+.choice-name{flex:1;font-weight:700;font-size:14px}
+.choice-price{font:500 13px var(--font-mono);color:var(--green)}
+
+.qty{margin-bottom:26px}
+.qty-box{display:inline-flex;border:1px solid rgba(255,255,255,.25)}
+.qty-box button{
+    width:42px;
+    border:0;
+    background:transparent;
+    color:var(--text);
+    font-size:20px;
+    cursor:pointer;
+}
+.qty-box button:hover{background:rgba(168,232,74,.14);color:var(--green)}
+.qty-box button:focus-visible{outline:2px solid var(--cyan);outline-offset:-2px}
+.qty-box input{
+    width:56px;
+    border:0;
+    border-inline:1px solid rgba(255,255,255,.25);
+    background:transparent;
+    color:var(--text);
+    font:500 15px var(--font-mono);
+    text-align:center;
+    -moz-appearance:textfield;
+}
+.qty-box input::-webkit-inner-spin-button,.qty-box input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.qty-box input:focus-visible{outline:2px solid var(--cyan);outline-offset:-2px}
+
+.total{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:12px;
+    padding-top:18px;
+    border-top:1px solid rgba(255,255,255,.18);
+}
+.total span{font:400 12px var(--font-mono);color:var(--muted)}
+.total b{font:700 34px/1 var(--font-head);color:var(--green)}
+
+.field{display:grid;gap:7px;margin-bottom:16px}
+.field span{font:400 12px var(--font-mono);color:var(--muted)}
+.field input,.field textarea{
+    width:100%;
+    padding:12px 14px;
+    border:1px solid rgba(255,255,255,.22);
+    border-radius:0;
+    background:#050a0b;
+    color:var(--text);
+    font:400 15px var(--font-body);
+    resize:vertical;
+}
+.field input:focus,.field textarea:focus{outline:2px solid var(--green);outline-offset:0;border-color:var(--green)}
+.field input:user-invalid,.field textarea:user-invalid{border-color:var(--amber)}
+.agree{display:flex;align-items:flex-start;gap:10px;margin:4px 0 22px;font-size:13px;color:#a9bbb3;line-height:1.45}
+.agree input{accent-color:var(--green);width:16px;height:16px;margin:2px 0 0;flex:none}
+.agree a{color:var(--green);text-underline-offset:3px}
+.buy-error{margin:0 0 16px;color:var(--amber);font-size:14px}
+
+.buy-done{padding:40px 0 8px}
+.buy-done h3{font:700 clamp(32px,4vw,48px)/1 var(--font-head);text-transform:uppercase;color:var(--green);margin-bottom:16px}
+.buy-done p{margin:0 0 28px;color:#a9bbb3;font-size:15px;line-height:1.6;max-width:380px}
+
+/* ---------- адаптив ---------- */
+@media(max-width:900px){
+    .gun,.gun:nth-child(even){
+        grid-template-columns:minmax(0,1fr);
+        padding:88px 6vw 64px;
+    }
+    .gun:nth-child(even) .gun-stage{order:0}
+    .gun-stage{order:-1;max-height:none}
+    .gun:nth-child(even) .gun-stage{order:-1}
+    .gallery{padding:80px 0 96px}
+    .gallery h2,.gallery-lead{margin-left:6vw;margin-right:6vw}
+    .gallery-row{
+        grid-template-columns:none;
+        grid-auto-flow:column;
+        grid-auto-columns:min(72vw,320px);
+        overflow-x:auto;
+        scroll-snap-type:x mandatory;
+        padding:6px 6vw 18px;
+        scroll-padding-inline:6vw;
+    }
+    .card{scroll-snap-align:start}
+    .buy-grid{grid-template-columns:minmax(0,1fr)}
+    .buy-side{border-right:0;border-bottom:1px solid rgba(255,255,255,.14);padding:28px 22px}
+    .buy-main{padding:26px 22px 30px}
+}
+@media(max-width:650px){
+    .gun h2,.gallery h2{font-size:clamp(44px,15vw,80px)}
+    .h2-tilt{transform:rotate(-2deg)}
+    .h2-tilt .sticker{left:auto;right:-6px;bottom:-1.1em}
+    .gun-actions{gap:20px}
+}
+@media(prefers-reduced-motion:reduce){
+    .card,.btn,.buy[open],.gun.is-open .gun-parts,.card-shot.is-firing,.gun-stage.is-loading::after,.card-stage.is-loading::after{animation:none;transition:none}
+}

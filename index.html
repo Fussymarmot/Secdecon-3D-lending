@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Коллекция портальных пушек" />
+    <script>document.documentElement.classList.add('is-loading');setTimeout(function()
+    {document.documentElement.classList.remove('is-loading')},7000);</script>
+    <title>Secdecon — Межгалактическая коллекция</title>
+    <link rel="shortcut icon" href="assets/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="css/loader-style.css">
+    <link rel="preload" href="assets/fonts/Oswald-Bold.woff" as="font" type="font/woff" crossorigin>
+    <link rel="preload" href="assets/fonts/Manrope-Regular.woff" as="font" type="font/woff" crossorigin>
+    <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="css/root-style.css">
+    <link rel="stylesheet" href="css/header-style.css">
+    <link rel="stylesheet" href="css/intro-style.css">
+    <link rel="stylesheet" href="css/portal-style.css">
+    <link rel="stylesheet" href="css/collection-style.css">
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div class="loader" id="loader" role="status" aria-live="polite">
+        <div class="loader-portal" aria-hidden="true">
+            <div class="loader-oval"><div class="loader-spin"><img src="assets/svgs/loader-swirl.svg" alt="" width="200" height="200"></div></div>
+            <i class="loader-dot"></i><i class="loader-dot"></i><i class="loader-dot"></i><i class="loader-dot"></i><i class="loader-dot"></i>
+        </div>
+        <p class="loader-text" id="loader-text">Открываем портал…</p>
+    </div>
+
+    <div class="noise" aria-hidden="true"></div>
+    <header class="header">
+        <a class="logo" href="#intro">
+            <span class="logo-mark">S</span> ECDECON
+        </a>
+        <nav class="nav" aria-label="Главная навигация">
+            <a href="#collection">Коллекция</a>
+            <a href="#gallery">Все модели <span>↘</span></a>
+        </nav>
+    </header>
+    <main class="main">
+        <section class="intro" id="intro">
+            <div class="intro-grid" aria-hidden="true"></div>
+            <div class="intro-copy">
+                <h1><br /><em>ПОРТАЛЬНАЯ</em><br /><span class="h1-tilt">ПУШКА<span class="sticker" aria-hidden="true">измерение C-137</span></span></h1>
+                <p class="intro-description">Четыре артефакта из межпространства. Изучай детали, вращай модели и загляни внутрь технологий, которым не место в этой вселенной.</p>
+                <a class="round-link" href="#collection"><span>ОТКРЫТЬ КОЛЛЕКЦИЮ</span><b>↓</b></a>
+            </div>
+            <div class="portal-stage" id="portal" role="img" aria-label="Зелёный портал"></div>
+        </section>
+
+        <!-- Разделы с моделями строит js/shop.js из js/guns.js -->
+        <div class="collection" id="collection"></div>
+
+        <section class="gallery" id="gallery" aria-labelledby="gallery-title">
+            <h2 id="gallery-title"><em>Выбери</em><br><span class="h2-tilt">свою пушку<span class="sticker" aria-hidden="true">все модели</span></span></h2>
+            <p class="gallery-lead">Наведи на пушку — она повернётся к тебе. Нажми «Купить», и откроется форма заказа.</p>
+            <div class="gallery-row" id="gallery-row"></div>
+        </section>
+    </main>
+
+    <dialog class="buy" id="buy" aria-labelledby="buy-title">
+        <button type="button" class="buy-close" id="buy-close" aria-label="Закрыть">✕</button>
+        <div class="buy-grid">
+            <div class="buy-side">
+                <h2 id="buy-title">Заказ</h2>
+                <fieldset class="choices">
+                    <legend>Какая пушка</legend>
+                    <div id="buy-choices"></div>
+                </fieldset>
+                <div class="qty">
+                    <span class="qty-label" id="qty-label">Сколько штук</span>
+                    <div class="qty-box" role="group" aria-labelledby="qty-label">
+                        <button type="button" id="qty-minus" aria-label="Меньше">−</button>
+                        <input type="number" id="buy-qty" name="qty" form="buy-form" min="1" max="10" value="1" inputmode="numeric" aria-labelledby="qty-label">
+                        <button type="button" id="qty-plus" aria-label="Больше">+</button>
+                    </div>
+                </div>
+                <p class="total"><span>Итого</span><b id="buy-total">—</b></p>
+            </div>
+            <div class="buy-main">
+                <form id="buy-form" novalidate>
+                    <label class="field"><span>Как к тебе обращаться</span><input name="name" type="text" autocomplete="name" required maxlength="80"></label>
+                    <label class="field"><span>Telegram или телефон</span><input name="contact" type="text" autocomplete="tel" required maxlength="80" placeholder="@username или +7…"></label>
+                    <label class="field"><span>Город и адрес доставки</span><textarea name="address" rows="2" required maxlength="240"></textarea></label>
+                    <label class="field"><span>Комментарий (необязательно)</span><textarea name="comment" rows="2" maxlength="400"></textarea></label>
+                    <label class="agree"><input type="checkbox" name="agree" required><span>Согласен с <a href="privacy.html" target="_blank" rel="noopener">политикой конфиденциальности</a></span></label>
+                    <p class="buy-error" id="buy-error" role="alert" hidden></p>
+                    <button type="submit" class="btn btn--fill"><span>Оформить заказ</span></button>
+                </form>
+                <div class="buy-done" id="buy-done" hidden>
+                    <h3>Wubba lubba dub dub!</h3>
+                    <p id="buy-done-text"></p>
+                    <button type="button" class="btn" id="buy-done-close"><span>Вернуться к пушкам</span></button>
+                </div>
+            </div>
+        </div>
+    </dialog>
+    <footer class="site-footer">
+        <a href="privacy.html">Политика конфиденциальности</a>
+    </footer>
+    <script type="module" src="js/shop.js"></script>
+    <script src="js/portal.js" defer></script>
+    <script src="js/loader.js"></script>
+</body>
+</html>
