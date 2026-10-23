@@ -165,8 +165,47 @@ $('#buy-done-close').addEventListener('click', () => dlg.close());
 dlg.addEventListener('click', (e) => { if (e.target === dlg) { dlg.close(); } });
 dlg.addEventListener('close', () => cards.forEach((c) => c.classList.remove('is-picked')));
 
+
+/* ---------- телефон: маска и проверка ---------- */
+const phone = $('#buy-phone');
+
+function phoneDigits(raw) {
+    let d = String(raw || '').replace(/\D/g, '');
+    if (/^\s*\+7/.test(raw) || (d.length >= 11 && /^[78]/.test(d)) || d === '8') { d = d.slice(1); }
+    return d.slice(0, 10);
+}
+function phoneFormat(d) {
+    if (!d) { return ''; }
+    let out = '+7 (' + d.slice(0, 3);
+    if (d.length >= 3) { out += ')'; }
+    if (d.length > 3) { out += ' ' + d.slice(3, 6); }
+    if (d.length > 6) { out += '-' + d.slice(6, 8); }
+    if (d.length > 8) { out += '-' + d.slice(8, 10); }
+    return out;
+}
+/* возвращает текст ошибки или пустую строку, если номер подходит */
+function phoneError(d) {
+    if (!d) { return 'Введи номер телефона.'; }
+    if (d.length < 10) { return 'В номере не хватает цифр: нужно 10 после +7.'; }
+    if (!/^[3489]/.test(d)) { return 'Такого кода в российской нумерации нет. Проверь номер.'; }
+    if (/^(\d)\1{9}$/.test(d)) { return 'Похоже на ненастоящий номер. Проверь, пожалуйста.'; }
+    return '';
+}
+phone.addEventListener('input', (e) => {
+    let d = phoneDigits(phone.value);
+    /* Backspace по символу маски ("(", ")", пробел, "-") должен стирать цифру, а не упираться в маску */
+    if (e.inputType === 'deleteContentBackward' && phone.dataset.prev && phoneFormat(d) === phone.dataset.prev) {
+        d = d.slice(0, -1);
+    }
+    phone.value = phoneFormat(d);
+    phone.dataset.prev = phone.value;
+    phone.setCustomValidity('');
+});
+phone.addEventListener('blur', () => { phone.setCustomValidity(phoneError(phoneDigits(phone.value))); });
+
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    phone.setCustomValidity(phoneError(phoneDigits(phone.value)));
     if (!form.reportValidity()) { return; }
     const g = sale.find((x) => x.id === current);
     const fd = new FormData(form);
@@ -175,7 +214,7 @@ form.addEventListener('submit', async (e) => {
         quantity: Math.max(1, Math.min(10, parseInt(qty.value, 10) || 1)),
         total: g.price * Math.max(1, Math.min(10, parseInt(qty.value, 10) || 1)),
         name: String(fd.get('name') || '').trim(),
-        contact: String(fd.get('contact') || '').trim(),
+        phone: '+7' + phoneDigits(phone.value),
         address: String(fd.get('address') || '').trim(),
         comment: String(fd.get('comment') || '').trim(),
         createdAt: new Date().toISOString()
@@ -194,11 +233,12 @@ form.addEventListener('submit', async (e) => {
             console.info('Заказ (демо-режим, сервер не подключён):', order);
         }
         $('#buy-done-text').textContent = SHOP.orderEndpoint
-            ? 'Заказ на «' + g.name + '» отправлен. Мы напишем на ' + order.contact + ', как только он будет принят.'
+            ? 'Заказ на «' + g.name + '» отправлен. Мы позвоним на ' + phoneFormat(phoneDigits(order.phone)) + ', как только он будет принят.'
             : 'Форма работает в демо-режиме: заказ на «' + g.name + '» никуда не отправлен, потому что адрес приёма заказов ещё не указан.';
         form.hidden = true;
         $('#buy-done').hidden = false;
         form.reset();
+        phone.dataset.prev = '';
         qty.value = 1;
         recalc();
     } catch (ex) {

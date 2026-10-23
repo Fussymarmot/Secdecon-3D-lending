@@ -1,0 +1,124 @@
+.cookies-intro{
+    padding:28px 0 8px;
+    font-size:15px;
+    line-height:1.85;
+    overflow-wrap:anywhere;
+}
+
+.cookies-block{
+    padding:24px 0;
+    border-bottom:1px solid rgba(255,255,255,.1);
+    font-size:15px;
+    line-height:1.85;
+    overflow-wrap:anywhere;
+}
+
+.cookies-block h2{
+    margin-bottom:16px;
+    font-size:clamp(22px,3vw,32px);
+    line-height:1.15;
+}
+
+.cookies-block h2 span{
+    color:var(--green);
+    font-family:var(--font-mono);
+    margin-right:8px;
+}
+
+.cookies-block h3{
+    margin:20px 0 8px;
+    font:700 16px/1.4 var(--font-body);
+    color:var(--green);
+}
+
+.cookies-block p + p,
+.cookies-block p + ul,
+.cookies-block ul + p,
+.cookies-block ul + h3{
+    margin-top:12px;
+}
+
+.cookies-block ul{
+    padding-left:22px;
+}
+
+.cookies-block li + li{
+    margin-top:8px;
+}
+
+.cookies-block li::marker{
+    color:var(--green);
+}
+
+/* ---------- плашка с предупреждением о cookie ---------- */
+.cookie-notice{
+    position:fixed;
+    left:50%;
+    bottom:20px;
+    z-index:60;
+    display:flex;
+    align-items:center;
+    gap:20px;
+    width:min(calc(100% - 32px),760px);
+    padding:16px 20px;
+    border:1px solid rgba(168,232,74,.45);
+    background:rgba(11,18,21,.97);
+    box-shadow:0 12px 40px rgba(0,0,0,.55);
+    transform:translateX(-50%);
+    font-size:13px;
+    line-height:1.55;
+    color:#cfe0d8;
+}
+
+.cookie-notice[hidden]{
+    display:none;
+}
+
+.cookie-notice p{
+    flex:1;
+    margin:0;
+}
+
+.cookie-notice a{
+    color:var(--green);
+    text-underline-offset:3px;
+}
+
+.cookie-notice a:focus-visible,
+.cookie-notice button:focus-visible{
+    outline:2px solid var(--green);
+    outline-offset:4px;
+}
+
+.cookie-notice button{
+    flex:none;
+    padding:11px 22px;
+    border:1px solid var(--green);
+    border-radius:0;
+    background:var(--green);
+    color:#0a1204;
+    font:700 12px/1 var(--font-mono);
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    cursor:pointer;
+}
+
+.cookie-notice button:hover{
+    background:#c3ff63;
+}
+
+@media(max-width:650px){
+    .cookie-notice{
+        flex-direction:column;
+        align-items:stretch;
+        gap:12px;
+        bottom:12px;
+        padding:14px 16px;
+    }
+
+    .cookies-block,
+    .cookies-intro{
+        font-size:14px;
+        line-height:1.75;
+    }
+}

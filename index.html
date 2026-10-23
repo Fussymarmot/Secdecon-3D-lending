@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="css/intro-style.css">
     <link rel="stylesheet" href="css/portal-style.css">
     <link rel="stylesheet" href="css/collection-style.css">
+    <link rel="stylesheet" href="css/cookies-style.css">
     <script type="importmap">
     {
         "imports": {
@@ -87,9 +88,9 @@
             </div>
             <div class="buy-main">
                 <form id="buy-form" novalidate>
-                    <label class="field"><span>Как к тебе обращаться</span><input name="name" type="text" autocomplete="name" required maxlength="80"></label>
-                    <label class="field"><span>Telegram или телефон</span><input name="contact" type="text" autocomplete="tel" required maxlength="80" placeholder="@username или +7…"></label>
-                    <label class="field"><span>Город и адрес доставки</span><textarea name="address" rows="2" required maxlength="240"></textarea></label>
+                    <label class="field"><span>Как к вам обращаться</span><input name="name" type="text" autocomplete="name" required maxlength="80"></label>
+                    <label class="field"><span>Номер телефона</span><input name="phone" type="tel" id="buy-phone" autocomplete="tel" inputmode="tel" required maxlength="18" placeholder="+7 (900) 000-00-00"></label>
+                    <label class="field"><span>Адрес доставки</span><textarea name="address" rows="2" required maxlength="240"></textarea></label>
                     <label class="field"><span>Комментарий (необязательно)</span><textarea name="comment" rows="2" maxlength="400"></textarea></label>
                     <label class="agree"><input type="checkbox" name="agree" required><span>Согласен с <a href="privacy.html" target="_blank" rel="noopener">политикой конфиденциальности</a></span></label>
                     <p class="buy-error" id="buy-error" role="alert" hidden></p>
@@ -105,9 +106,11 @@
     </dialog>
     <footer class="site-footer">
         <a href="privacy.html">Политика конфиденциальности</a>
+        <a href="cookies.html">Политика cookies</a>
     </footer>
     <script type="module" src="js/shop.js"></script>
     <script src="js/portal.js" defer></script>
     <script src="js/loader.js"></script>
+    <script src="js/cookies.js" defer></script>
 </body>
 </html>
