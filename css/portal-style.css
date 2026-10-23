@@ -60,7 +60,8 @@
 }
 
 .portal-layer svg,
-.portal-swirl-spin svg{
+.portal-swirl-spin svg,
+.portal-swirl-spin img{
     display:block;
     width:100%;
     height:100%;
@@ -86,7 +87,6 @@
     aspect-ratio:1;
     transform-origin:50% 50%;
     transform:translateY(-50%) scaleY(1.6667);
-    will-change:transform;
 }
 
 .spin-a{animation:swirl-spin 16s linear infinite}
@@ -145,6 +145,3 @@
     to{opacity:1;transform:scale(1) rotate(0)}
 }
 
-@media(prefers-reduced-motion:reduce){
-    .portal-stage,.portal-aura,.portal-body,.spin-a,.spin-b,.sparkle{animation:none}
-}
