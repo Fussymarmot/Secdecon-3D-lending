@@ -145,18 +145,19 @@
         return '<svg viewBox="0 0 500 700" aria-hidden="true" focusable="false">' + a.join('') + '</svg>';
     }
 
-    function asImg(svg) {
-        svg = svg.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ');
-        return '<img alt="" draggable="false" src="data:image/svg+xml;charset=utf-8,' +
-            encodeURIComponent(svg) + '">';
+    /* Спираль заранее отрендерена в картинки (assets/portal/*.webp):
+       живой SVG-фильтр на вращающемся слое в Firefox и мобильном Chrome рисуется кусками.
+       Исходные функции swirlMain() / swirlLight() оставлены, чтобы перерисовать картинки при необходимости. */
+    function swirlImg(name) {
+        return '<img alt="" width="768" height="768" draggable="false" decoding="async" src="assets/portal/swirl-' + name + '.webp">';
     }
 
     function build() {
         return '<div class="portal-aura"></div>' +
             '<div class="portal-body">' +
             '<div class="portal-swirl-oval">' +
-            '<div class="portal-swirl-spin spin-a">' + asImg(swirlMain()) + '</div>' +
-            '<div class="portal-swirl-spin spin-b">' + asImg(swirlLight()) + '</div>' +
+            '<div class="portal-swirl-spin spin-a">' + swirlImg('main') + '</div>' +
+            '<div class="portal-swirl-spin spin-b">' + swirlImg('light') + '</div>' +
             '</div>' +
             '<div class="portal-layer portal-rim">' + rim() + '</div>' +
             '<div class="portal-layer portal-sparkles">' + sparkles() + '</div>' +
