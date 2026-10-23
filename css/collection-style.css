@@ -363,6 +363,28 @@
     font:400 15px var(--font-body);
     resize:vertical;
 }
+/* автозаполнение и вставка из подсказок браузера не должны красить поля в белый/голубой */
+.field input,.field textarea,.qty-box input{color-scheme:dark}
+.field input:-webkit-autofill,
+.field input:-webkit-autofill:hover,
+.field input:-webkit-autofill:focus,
+.field input:-webkit-autofill:active,
+.field textarea:-webkit-autofill,
+.field textarea:-webkit-autofill:hover,
+.field textarea:-webkit-autofill:focus,
+.qty-box input:-webkit-autofill,
+.qty-box input:-webkit-autofill:focus{
+    -webkit-text-fill-color:var(--text);
+    caret-color:var(--text);
+    -webkit-box-shadow:0 0 0 1000px #050a0b inset;
+    box-shadow:0 0 0 1000px #050a0b inset;
+    transition:background-color 9999s ease-in-out 0s;
+}
+.field input:autofill,.field textarea:autofill{
+    box-shadow:0 0 0 1000px #050a0b inset;
+    -webkit-text-fill-color:var(--text);
+    color:var(--text);
+}
 .field input:focus,.field textarea:focus{outline:2px solid var(--green);outline-offset:0;border-color:var(--green)}
 .field input:user-invalid,.field textarea:user-invalid{border-color:var(--amber)}
 .agree{display:flex;align-items:flex-start;gap:10px;margin:4px 0 22px;font-size:13px;color:#a9bbb3;line-height:1.45}
