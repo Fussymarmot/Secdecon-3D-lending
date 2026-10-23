@@ -152,6 +152,14 @@
         return '<img alt="" width="768" height="768" draggable="false" decoding="async" src="assets/portal/swirl-' + name + '.webp">';
     }
 
+    function rimImgs() {
+        var out = '', i;
+        for (i = 0; i < 6; i++) {
+            out += '<img alt="" draggable="false" decoding="async" style="--i:' + i + '" src="assets/portal/rim-' + i + '.webp">';
+        }
+        return out;
+    }
+
     function build() {
         return '<div class="portal-aura"></div>' +
             '<div class="portal-body">' +
@@ -159,7 +167,7 @@
             '<div class="portal-swirl-spin spin-a">' + swirlImg('main') + '</div>' +
             '<div class="portal-swirl-spin spin-b">' + swirlImg('light') + '</div>' +
             '</div>' +
-            '<div class="portal-layer portal-rim">' + rim() + '</div>' +
+            '<div class="portal-layer portal-rim">' + rimImgs() + '</div>' +
             '<div class="portal-layer portal-sparkles">' + sparkles() + '</div>' +
             '</div>';
     }

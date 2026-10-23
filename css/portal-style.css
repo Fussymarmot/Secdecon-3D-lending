@@ -16,7 +16,6 @@
     height:112%;
     border-radius:50%;
     background:radial-gradient(ellipse,rgba(120,255,70,.5) 0,rgba(60,210,60,.22) 38%,transparent 66%);
-    filter:blur(26px);
     animation:aura-pulse 4s ease-in-out infinite;
 }
 
@@ -75,8 +74,6 @@
     top:21.43%;
     width:48%;
     height:57.14%;
-    border-radius:50%;
-    overflow:hidden;
 }
 
 .portal-swirl-spin{
@@ -98,6 +95,25 @@
 }
 
 .portal-rim,.portal-sparkles{pointer-events:none}
+
+/* кольцо: 6 заранее отрендеренных кадров «кипения», переключаются по очереди */
+.portal-rim img{
+    position:absolute;
+    inset:0;
+    display:block;
+    width:100%;
+    height:100%;
+    opacity:0;
+    animation:rim-frame 3s infinite;
+    animation-timing-function:steps(1,end);
+    animation-delay:calc(var(--i) * .5s);
+}
+
+@keyframes rim-frame{
+    0%{opacity:1}
+    16.666%{opacity:0}
+    100%{opacity:0}
+}
 
 /* мерцание брызг */
 .sparkle{
