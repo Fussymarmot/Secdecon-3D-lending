@@ -127,6 +127,7 @@ const dlg = $('#buy');
 const form = $('#buy-form');
 const choices = $('#buy-choices');
 const qty = $('#buy-qty');
+const phone = $('#buy-phone');
 let current = sale.length ? sale[0].id : null;
 
 function renderChoices() {
@@ -139,6 +140,47 @@ function recalc() {
     const g = sale.find((x) => x.id === current);
     const n = Math.max(1, Math.min(10, parseInt(qty.value, 10) || 1));
     $('#buy-total').textContent = g ? money(g.price * n) : '—';
+    saveDraft();
+}
+
+/* ---------- черновик заказа: переживает переход на другие страницы и перезагрузку ---------- */
+const DRAFT_KEY = 'secdecon_order_draft';
+const DRAFT_TTL = 6 * 60 * 60 * 1000; /* 6 часов */
+const field = (n) => form.elements[n];
+
+function saveDraft() {
+    if (form.hidden) { return; } /* показан экран «заказ отправлен» — сохранять нечего */
+    try {
+        localStorage.setItem(DRAFT_KEY, JSON.stringify({
+            t: Date.now(),
+            open: dlg.open,
+            gun: current,
+            qty: qty.value,
+            name: field('name').value,
+            phone: phone.value,
+            address: field('address').value,
+            comment: field('comment').value
+        }));
+    } catch (e) { /* хранилище недоступно — не страшно */ }
+}
+function clearDraft() {
+    try { localStorage.removeItem(DRAFT_KEY); } catch (e) { /* ничего */ }
+}
+function restoreDraft() {
+    let d = null;
+    try { d = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null'); } catch (e) { d = null; }
+    if (!d || !d.t || Date.now() - d.t > DRAFT_TTL) { clearDraft(); return; }
+    if (!sale.some((g) => g.id === d.gun)) { return; }
+    current = d.gun;
+    qty.value = Math.max(1, Math.min(10, parseInt(d.qty, 10) || 1));
+    field('name').value = d.name || '';
+    field('address').value = d.address || '';
+    field('comment').value = d.comment || '';
+    phone.value = phoneFormat(phoneDigits(d.phone));
+    phone.dataset.prev = phone.value;
+    renderChoices();
+    recalc();
+    if (d.open) { openBuy(current); }
 }
 function openBuy(id) {
     if (!sale.some((g) => g.id === id)) { return; }
@@ -149,6 +191,7 @@ function openBuy(id) {
     form.hidden = false;
     cards.forEach((c, k) => c.classList.toggle('is-picked', k === id));
     dlg.showModal();
+    saveDraft();
 }
 choices.addEventListener('change', (e) => {
     if (e.target.name === 'gun') {
@@ -163,11 +206,13 @@ qty.addEventListener('input', recalc);
 $('#buy-close').addEventListener('click', () => dlg.close());
 $('#buy-done-close').addEventListener('click', () => dlg.close());
 dlg.addEventListener('click', (e) => { if (e.target === dlg) { dlg.close(); } });
-dlg.addEventListener('close', () => cards.forEach((c) => c.classList.remove('is-picked')));
+dlg.addEventListener('close', () => { cards.forEach((c) => c.classList.remove('is-picked')); saveDraft(); });
+form.addEventListener('input', saveDraft);
+form.addEventListener('change', saveDraft);
+window.addEventListener('pagehide', saveDraft);
 
 
 /* ---------- телефон: маска и проверка ---------- */
-const phone = $('#buy-phone');
 
 function phoneDigits(raw) {
     let d = String(raw || '').replace(/\D/g, '');
@@ -237,6 +282,7 @@ form.addEventListener('submit', async (e) => {
             : 'Форма работает в демо-режиме: заказ на «' + g.name + '» никуда не отправлен, потому что адрес приёма заказов ещё не указан.';
         form.hidden = true;
         $('#buy-done').hidden = false;
+        clearDraft();
         form.reset();
         phone.dataset.prev = '';
         qty.value = 1;
@@ -255,3 +301,4 @@ const collection = $('#collection');
 sale.forEach((g) => collection.appendChild(buildSection(g)));
 const row = $('#gallery-row');
 GUNS.forEach((g) => row.appendChild(buildCard(g)));
+restoreDraft();

@@ -108,7 +108,3 @@ html.is-loading:not(.loader-out) .portal-stage{animation-play-state:paused}
     text-align:center;
 }
 
-@media(prefers-reduced-motion:reduce){
-    .loader-portal,.loader-oval,.loader-spin,.loader-dot{animation:none}
-    .loader-spin{transform:translateY(-50%) scaleY(1.4615)}
-}

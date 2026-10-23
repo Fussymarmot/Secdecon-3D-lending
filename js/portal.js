@@ -145,12 +145,18 @@
         return '<svg viewBox="0 0 500 700" aria-hidden="true" focusable="false">' + a.join('') + '</svg>';
     }
 
+    function asImg(svg) {
+        svg = svg.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ');
+        return '<img alt="" draggable="false" src="data:image/svg+xml;charset=utf-8,' +
+            encodeURIComponent(svg) + '">';
+    }
+
     function build() {
         return '<div class="portal-aura"></div>' +
             '<div class="portal-body">' +
             '<div class="portal-swirl-oval">' +
-            '<div class="portal-swirl-spin spin-a">' + swirlMain() + '</div>' +
-            '<div class="portal-swirl-spin spin-b">' + swirlLight() + '</div>' +
+            '<div class="portal-swirl-spin spin-a">' + asImg(swirlMain()) + '</div>' +
+            '<div class="portal-swirl-spin spin-b">' + asImg(swirlLight()) + '</div>' +
             '</div>' +
             '<div class="portal-layer portal-rim">' + rim() + '</div>' +
             '<div class="portal-layer portal-sparkles">' + sparkles() + '</div>' +
@@ -165,11 +171,4 @@
     var stage = document.getElementById('portal');
     if (!stage) { return; }
     stage.innerHTML = build();
-
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        var svgs = stage.querySelectorAll('svg');
-        for (var i = 0; i < svgs.length; i++) {
-            if (svgs[i].pauseAnimations) { svgs[i].pauseAnimations(); }
-        }
-    }
 })();
