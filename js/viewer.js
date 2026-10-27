@@ -5,8 +5,9 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const COARSE = matchMedia('(pointer: coarse)').matches;
+const CARD_SIZE = 3.43;  /* размер модели в карточке */
 
-/* ---------- загрузка моделей (один файл грузится один раз) ---------- */
+/* загрузка моделей */
 const loader = new GLTFLoader();
 const cache = new Map();
 export function loadModel(url) {
@@ -14,7 +15,7 @@ export function loadModel(url) {
     return cache.get(url);
 }
 
-/* ---------- общий цикл отрисовки: рисуем только то, что видно на экране ---------- */
+/* рисуем только то, что видно на экране */
 const viewers = new Set();
 let raf = 0, lastTime = 0;
 function loop(now) {
@@ -37,8 +38,8 @@ function lerpAngle(a, b, t) {
 }
 function smooth(t) { return t * t * (3 - 2 * t); }
 
-/* mode: 'view'  — большой просмотрщик в разделе (крутится мышью, разбирается)
-         'card'  — карточка внизу (сама вращается, при наведении поворачивается к курсору) */
+/* mode: 'view'  — большой просмотрщик в разделе 
+         'card'  — карточка внизу */
 export class GunViewer {
     constructor(host, gun, opts) {
         this.host = host;
@@ -78,9 +79,10 @@ export class GunViewer {
 
         this.camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
 
+        var L = this.light = gun.light || {};   /* цвета подсветки */
         var key = new THREE.DirectionalLight(0xffffff, 2.2);
         key.position.set(3, 5, 4);
-        var rim = new THREE.DirectionalLight(0x7dffb0, 1.4);
+        var rim = new THREE.DirectionalLight(L.rim != null ? L.rim : 0x7dffb0, 1.4);
         rim.position.set(-4, 2, -3);
         this.scene.add(key, rim);
 
@@ -101,7 +103,7 @@ export class GunViewer {
         var model = src.clone(true);
         model.traverse(function (o) {
             if (!o.isMesh) { return; }
-            o.material = o.material.clone();   /* у каждой детали свои материалы — подсветка не затрагивает соседей */
+            o.material = o.material.clone();
             if (o.material.transparent) { o.material.depthWrite = false; o.renderOrder = 2; }
         });
         this.pivot.add(model);
@@ -114,7 +116,7 @@ export class GunViewer {
             var d = n.userData && n.userData.explode;
             var dir = new THREE.Vector3();
             if (d) { dir.fromArray(d); }
-            else {   /* нет заданного направления — деталь просто уезжает от центра */
+            else {
                 box.setFromObject(n).getCenter(c);
                 dir.copy(c).multiplyScalar(0.9);
             }
@@ -129,17 +131,23 @@ export class GunViewer {
         this.rE = sE.radius; this.cE = sE.center.clone();
         this.applyExplode(0);
 
-        /* зелёное свечение колбы подсвечивает корпус */
-        var flask = model.getObjectByName('flask');
+        var flask = model.getObjectByName(this.light.glowNode || 'flask');
         if (flask) {
             var fc = new THREE.Box3().setFromObject(flask).getCenter(new THREE.Vector3());
-            var glow = new THREE.PointLight(0x6dff3a, 3, 7, 2);
+            var glow = new THREE.PointLight(this.light.glow != null ? this.light.glow : 0x6dff3a, 3, 7, 2);
             glow.position.copy(fc);
             flask.add(glow);
         }
 
+        /* приводятся к одному размеру (см. spinSize) */
+        this.rCard = this.rA;
+        if (this.mode === 'card') {
+            var k = CARD_SIZE / this.spinSize(model);
+            this.pivot.scale.setScalar(k);
+            this.rCard = this.rA * Math.max(1, k);
+        }
         if (this.mode === 'view') { this.setupView(); }
-        else { this.camera.position.set(0, this.dist(this.rA) * 0.22, this.dist(this.rA)); this.camera.lookAt(0, 0, 0); }
+        else { this.camera.position.set(0, this.dist(this.rCard) * 0.22, this.dist(this.rCard)); this.camera.lookAt(0, 0, 0); }
 
         this.t = this.target;
         this.applyExplode(smooth(this.t));
@@ -151,11 +159,10 @@ export class GunViewer {
 
     setupView() {
         var v = this.gun.view || {}, az = (v.azimuth == null ? 38 : v.azimuth) * Math.PI / 180, el = (v.elevation == null ? 22 : v.elevation) * Math.PI / 180;
-        /* перед пушки смотрит в сторону -Z */
         var dir = new THREE.Vector3(Math.sin(az) * Math.cos(el), Math.sin(el), -Math.cos(az) * Math.cos(el));
         this.camera.position.copy(dir.multiplyScalar(this.dist(this.rA)));
         var ctl = this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-        ctl.enableZoom = false;       /* колесо не перехватываем — страница прокручивается как обычно */
+        ctl.enableZoom = false;       /* колесо не перехватываем*/
         ctl.enablePan = false;
         ctl.enableDamping = true;
         ctl.dampingFactor = 0.08;
@@ -191,9 +198,30 @@ export class GunViewer {
         this.camera.aspect = w / h;
         this.camera.updateProjectionMatrix();
         if (this.ready && this.mode === 'card') {
-            this.camera.position.set(0, this.dist(this.rA) * 0.22, this.dist(this.rA));
+            this.camera.position.set(0, this.dist(this.rCard) * 0.22, this.dist(this.rCard));
             this.camera.lookAt(0, 0, 0);
         }
+    }
+
+    spinSize(model) {
+        var pts = [], v = new THREE.Vector3();
+        model.updateMatrixWorld(true);
+        model.traverse(function (o) {
+            if (!o.isMesh) { return; }
+            var a = o.geometry.attributes.position, step = Math.max(1, Math.floor(a.count / 600));
+            for (var i = 0; i < a.count; i += step) { pts.push(v.fromBufferAttribute(a, i).applyMatrix4(o.matrixWorld).clone()); }
+        });
+        var minY = Infinity, maxY = -Infinity;
+        pts.forEach(function (p) { minY = Math.min(minY, p.y); maxY = Math.max(maxY, p.y); });
+        var h = maxY - minY, sum = 0, N = 24;
+        for (var n = 0; n < N; n++) {
+            var a = n / N * Math.PI, c = Math.cos(a), s = Math.sin(a), lo = Infinity, hi = -Infinity;
+            pts.forEach(function (p) { var x = p.x * c + p.z * s; lo = Math.min(lo, x); hi = Math.max(hi, x); });
+            sum += (hi - lo) * h;
+        }
+        var r = Math.sqrt(sum / N);
+        if (window.__spin) { window.__spin[this.gun.id] = r; }
+        return r;
     }
 
     applyExplode(e) {
@@ -206,7 +234,7 @@ export class GunViewer {
         if (REDUCE && this.ready) { this.t = this.target; }
     }
 
-    /* подсветить деталь по id из guns.js (или снять подсветку, если null) */
+    /* подсветить деталь по id из guns.js*/
     setHighlight(id) {
         if (this.hlId === id || !this.model) { return; }
         this.hlId = id;
@@ -221,12 +249,11 @@ export class GunViewer {
             var b = m.userData.base, lit = b.e.r + b.e.g + b.e.b > 0.01;
             if (on) {
                 if (lit) { m.emissiveIntensity = b.i * 1.8; }
-                else { m.emissive.set(0x3dff5a); m.emissiveIntensity = 0.3; }
+                else { m.emissive.set(this.light.highlight != null ? this.light.highlight : 0x3dff5a); m.emissiveIntensity = 0.3; }
             } else { m.emissive.copy(b.e); m.emissiveIntensity = b.i; }
         }.bind(this));
     }
 
-    /* для карточек: курсор над карточкой (x, y в диапазоне -1..1) */
     aim(x, y) { this.hoverTarget = 1; this.aimX = x; this.aimY = y; }
     relax() { this.hoverTarget = 0; }
 
@@ -247,7 +274,7 @@ export class GunViewer {
         } else {
             this.hover += (this.hoverTarget - this.hover) * (1 - Math.exp(-dt * 6));
             if (this.hover < 0.02 && !REDUCE) { this.spin += dt * 0.55; }
-            var facing = Math.PI + this.aimX * 0.55;     /* перед пушки (-Z) разворачивается к зрителю */
+            var facing = Math.PI + this.aimX * 0.55;     /* перед пушки разворачивается к зрителю */
             this.pivot.rotation.y = lerpAngle(this.spin, facing, smooth(this.hover));
             this.pivot.rotation.x = this.aimY * 0.22 * this.hover;
             if (this.hover < 0.02) { this.spin = this.pivot.rotation.y; }

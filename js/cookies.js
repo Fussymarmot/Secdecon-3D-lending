@@ -1,6 +1,5 @@
-/* Предупреждение об использовании cookie.
-   Отказаться нельзя: плашка только сообщает, что cookie используются.
-   Нажатие «Понятно» запоминается в самом cookie (и в localStorage как запасной вариант). */
+/* Предупреждение об использовании cookie. */
+
 (function () {
     var NAME = 'secdecon_cookie_notice';
 
@@ -11,7 +10,7 @@
 
     function remember() {
         document.cookie = NAME + '=1; max-age=31536000; path=/; SameSite=Lax';
-        try { localStorage.setItem(NAME, '1'); } catch (e) { /* ничего страшного */ }
+        try { localStorage.setItem(NAME, '1'); } catch (e) { }
     }
 
     function show() {

@@ -145,9 +145,6 @@
         return '<svg viewBox="0 0 500 700" aria-hidden="true" focusable="false">' + a.join('') + '</svg>';
     }
 
-    /* Спираль заранее отрендерена в картинки (assets/portal/*.webp):
-       живой SVG-фильтр на вращающемся слое в Firefox и мобильном Chrome рисуется кусками.
-       Исходные функции swirlMain() / swirlLight() оставлены, чтобы перерисовать картинки при необходимости. */
     function swirlImg(name) {
         return '<img alt="" width="768" height="768" draggable="false" decoding="async" src="assets/portal/swirl-' + name + '.webp">';
     }

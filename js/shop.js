@@ -1,5 +1,5 @@
-import { GUNS, SHOP } from './guns.js';
-import { GunViewer } from './viewer.js';
+import { GUNS, SHOP } from './guns.js?v=2';
+import { GunViewer } from './viewer.js?v=3';
 
 const $ = (s, r) => (r || document).querySelector(s);
 const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
@@ -8,7 +8,7 @@ const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&
 
 const sale = GUNS.filter((g) => g.model);
 
-/* ленивая инициализация: тяжёлое (WebGL, загрузка модели) стартует, когда блок почти на экране */
+
 function whenNear(el, fn) {
     if (!('IntersectionObserver' in window)) { fn(); return; }
     const io = new IntersectionObserver((es) => {
@@ -17,11 +17,12 @@ function whenNear(el, fn) {
     io.observe(el);
 }
 
-/* ---------- разделы коллекции ---------- */
+/* разделы коллекции */
 function buildSection(g) {
     const sec = document.createElement('section');
     sec.className = 'gun';
     sec.id = 'gun-' + g.id;
+    if (g.accent) { sec.dataset.accent = g.accent; }
     sec.innerHTML =
         '<div class="gun-copy">' +
             '<h2><em>' + esc(g.heading) + '</em><br><span class="h2-tilt">' + esc(g.short) +
@@ -74,21 +75,22 @@ function buildSection(g) {
     return sec;
 }
 
-/* ---------- ряд пушек внизу ---------- */
+/* ряд пушек внизу */
 const cards = new Map();
 function buildCard(g) {
     const ready = !!g.model;
     const el = document.createElement('article');
     el.className = 'card' + (ready ? '' : ' is-soon');
     el.dataset.gun = g.id;
+    if (g.accent) { el.dataset.accent = g.accent; }
     el.innerHTML =
         '<div class="card-stage">' +
             (ready ? '' : '<span class="card-soon">скоро</span>') +
             '<i class="card-shot" aria-hidden="true"></i>' +
         '</div>' +
         '<div class="card-body">' +
-            '<h3 class="card-name">' + esc(g.heading || g.name) + '</h3>' +
-            '<p class="card-meta">' + (ready ? esc(g.short) : 'Ещё в мастерской') + '</p>' +
+            '<h3 class="card-name">' + esc(ready ? g.name : (g.heading || g.name)) + '</h3>' +
+            '<p class="card-meta">' + (ready ? esc(g.tagline || g.short) : 'Ещё в мастерской') + '</p>' +
             (ready
                 ? '<p class="card-price">' + money(g.price) + '</p><button type="button" class="btn btn--fill btn--small"><span>Купить</span></button>'
                 : '<p class="card-price card-price--off">—</p>') +
@@ -122,7 +124,7 @@ function buildCard(g) {
     return el;
 }
 
-/* ---------- окно покупки ---------- */
+/* окно покупки */
 const dlg = $('#buy');
 const form = $('#buy-form');
 const choices = $('#buy-choices');
@@ -132,7 +134,7 @@ let current = sale.length ? sale[0].id : null;
 
 function renderChoices() {
     choices.innerHTML = sale.map((g) =>
-        '<label class="choice"><input type="radio" name="gun" value="' + g.id + '"' + (g.id === current ? ' checked' : '') + '>' +
+        '<label class="choice" data-accent="' + (g.accent || 'green') + '"><input type="radio" name="gun" value="' + g.id + '"' + (g.id === current ? ' checked' : '') + '>' +
         '<span class="choice-name">' + esc(g.name) + '</span><span class="choice-price">' + money(g.price) + '</span></label>'
     ).join('');
 }
@@ -140,16 +142,17 @@ function recalc() {
     const g = sale.find((x) => x.id === current);
     const n = Math.max(1, Math.min(10, parseInt(qty.value, 10) || 1));
     $('#buy-total').textContent = g ? money(g.price * n) : '—';
+    dlg.dataset.accent = (g && g.accent) || '';   /* окно заказа красится в цвет выбранной пушки */
     saveDraft();
 }
 
-/* ---------- черновик заказа: переживает переход на другие страницы и перезагрузку ---------- */
+
 const DRAFT_KEY = 'secdecon_order_draft';
-const DRAFT_TTL = 6 * 60 * 60 * 1000; /* 6 часов */
+const DRAFT_TTL = 6 * 60 * 60 * 1000;
 const field = (n) => form.elements[n];
 
 function saveDraft() {
-    if (form.hidden) { return; } /* показан экран «заказ отправлен» — сохранять нечего */
+    if (form.hidden) { return; }
     try {
         localStorage.setItem(DRAFT_KEY, JSON.stringify({
             t: Date.now(),
@@ -161,10 +164,10 @@ function saveDraft() {
             address: field('address').value,
             comment: field('comment').value
         }));
-    } catch (e) { /* хранилище недоступно — не страшно */ }
+    } catch (e) { }
 }
 function clearDraft() {
-    try { localStorage.removeItem(DRAFT_KEY); } catch (e) { /* ничего */ }
+    try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
 }
 function restoreDraft() {
     let d = null;
@@ -212,7 +215,7 @@ form.addEventListener('change', saveDraft);
 window.addEventListener('pagehide', saveDraft);
 
 
-/* ---------- телефон: маска и проверка ---------- */
+/* телефон: маска и проверка  */
 
 function phoneDigits(raw) {
     let d = String(raw || '').replace(/\D/g, '');
@@ -238,7 +241,6 @@ function phoneError(d) {
 }
 phone.addEventListener('input', (e) => {
     let d = phoneDigits(phone.value);
-    /* Backspace по символу маски ("(", ")", пробел, "-") должен стирать цифру, а не упираться в маску */
     if (e.inputType === 'deleteContentBackward' && phone.dataset.prev && phoneFormat(d) === phone.dataset.prev) {
         d = d.slice(0, -1);
     }
@@ -296,7 +298,7 @@ form.addEventListener('submit', async (e) => {
     }
 });
 
-/* ---------- запуск ---------- */
+/* запуск */
 const collection = $('#collection');
 sale.forEach((g) => collection.appendChild(buildSection(g)));
 const row = $('#gallery-row');

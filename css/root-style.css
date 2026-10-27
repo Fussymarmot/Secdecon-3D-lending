@@ -1,105 +1,135 @@
-:root{
-    --bg:#060a0c;
-    --panel:#0b1215;
-    --text:#eef8f3;
-    --muted:#8b9e98;
-    --green:#a8e84a;
-    --cyan:#6be9f5;
-    --purple:#d39aff;
-    --amber:#ffbd72;
-    --sticker:#f4e84a;
-    --font-head:'Oswald','Arial Narrow',Impact,sans-serif;
-    --font-body:'Manrope',Arial,sans-serif;
-    --font-mono:'IBM Plex Mono',monospace;
-    box-sizing:border-box;
-    scroll-padding-top:75px;
+:root {
+    --bg: #060a0c;
+    --panel: #0b1215;
+    --text: #eef8f3;
+    --muted: #8b9e98;
+    --green: #a8e84a;
+    --cyan: #6be9f5;
+    --purple: #d39aff;
+    --amber: #ffbd72;
+    --sticker: #f4e84a;
+    --pink: #ff56b8;
+    --accent: var(--green);
+    --accent-rgb: 168, 232, 74;
+    --glow-rgb: 90, 220, 70;
+    --grid-rgb: 142, 255, 187;
+    --wash-rgb: 40, 120, 40;
+    --side-rgb: 60, 170, 50;
+    --stage-bg: #070d0f;
+    --btn-bg: #0d140f;
+    --font-head: 'Oswald', 'Arial Narrow', Impact, sans-serif;
+    --font-body: 'Manrope', Arial, sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+    box-sizing: border-box;
+    scroll-padding-top: 75px;
 }
 
-*{
-    box-sizing:border-box;
-    margin:0;
+* {
+    box-sizing: border-box;
+    margin: 0;
 }
 
-html{
-    scroll-behavior:smooth;
-    background:var(--bg);
+html {
+    scroll-behavior: smooth;
+    background: var(--bg);
 }
 
-body{
-    background:var(--bg);
-    color:var(--text);
-    font-family:var(--font-body);
-    overflow-x:hidden;
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    overflow-x: hidden;
 }
 
-button,a{
-    -webkit-tap-highlight-color:transparent;
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
 }
 
-button{
-    font:inherit;
+button {
+    font: inherit;
 }
 
-.site-footer{
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px 28px;
-    padding:24px 5.2vw;
-    border-top:1px solid rgba(255,255,255,.14);
-    font-size:12px;
+.site-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+    padding: 24px 5.2vw;
+    border-top: 1px solid rgba(255, 255, 255, .14);
+    font-size: 12px;
 }
 
-.site-footer a{
-    color:var(--muted);
-    text-underline-offset:4px;
+.site-footer a {
+    color: var(--muted);
+    text-underline-offset: 4px;
 }
 
-.site-footer a:hover{
-    color:var(--green);
+.site-footer a:hover {
+    color: var(--green);
 }
 
-.site-footer a:focus-visible{
-    outline:2px solid var(--green);
-    outline-offset:6px;
+.site-footer a:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 6px;
 }
 
-h1,h2{
-    font-family:var(--font-head);
-    font-weight:700;
-    letter-spacing:.005em;
-    line-height:.92;
-    text-transform:uppercase;
+h1,
+h2 {
+    font-family: var(--font-head);
+    font-weight: 700;
+    letter-spacing: .005em;
+    line-height: .92;
+    text-transform: uppercase;
 }
 
-h1{
-    font-size:clamp(72px,10vw,160px);
-    margin:32px 0 28px;
+h1 {
+    font-size: clamp(72px, 10vw, 160px);
+    margin: 32px 0 28px;
 }
 
-h1 em,h2 em{
-    font-style:normal;
-    color:var(--green);
-    position:relative;
-    display:inline-block;
+h1 em,
+h2 em {
+    font-style: normal;
+    color: var(--accent);
+    position: relative;
+    display: inline-block;
 }
 
-.h1-tilt{
-    position:relative;
-    display:inline-block;
-    transform:translateX(.35em) rotate(-2.2deg);
+.h1-tilt {
+    position: relative;
+    display: inline-block;
+    transform: translateX(.35em) rotate(-2.2deg);
 }
 
-.sticker{
-    position:absolute;
-    left:calc(100% + 16px);
-    bottom:.2em;
-    padding:6px 10px 5px;
-    background:var(--sticker);
-    color:#14130a;
-    font:500 12px/1 var(--font-mono);
-    letter-spacing:.04em;
-    text-transform:none;
-    white-space:nowrap;
-    transform:rotate(7deg);
-    box-shadow:2px 3px 0 rgba(0,0,0,.5);
+.sticker {
+    position: absolute;
+    left: calc(100% + 16px);
+    bottom: .2em;
+    padding: 6px 10px 5px;
+    background: var(--sticker);
+    color: #14130a;
+    font: 500 12px/1 var(--font-mono);
+    letter-spacing: .04em;
+    text-transform: none;
+    white-space: nowrap;
+    transform: rotate(7deg);
+    box-shadow: 2px 3px 0 rgba(0, 0, 0, .5);
+}
+
+/* строка выбора */
+[data-accent="green"] {
+    --accent: var(--green);
+    --accent-rgb: 168, 232, 74;
+}
+
+/* розовый акцент  */
+[data-accent="pink"] {
+    --accent: var(--pink);
+    --accent-rgb: 255, 86, 184;
+    --glow-rgb: 255, 60, 170;
+    --grid-rgb: 255, 170, 220;
+    --wash-rgb: 130, 24, 92;
+    --side-rgb: 190, 40, 130;
+    --stage-bg: #0d070c;
+    --btn-bg: #160a12;
 }
