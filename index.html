@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Коллекция портальных пушек" />
     <script>document.documentElement.classList.add('is-loading');setTimeout(function()
-    {document.documentElement.classList.remove('is-loading')},7000);</script>
+    {document.documentElement.classList.remove('is-loading')},16000);</script>
     <title>Secdecon — Межгалактическая коллекция</title>
     <link rel="shortcut icon" href="assets/favicon.png" type="image/x-icon">
-    <link rel="stylesheet" href="css/loader-style.css?v=3">
+    <link rel="stylesheet" href="css/loader-style.css?v=4">
     <link rel="preload" href="assets/fonts/Oswald-Bold.woff" as="font" type="font/woff" crossorigin>
     <link rel="preload" href="assets/fonts/Manrope-Regular.woff" as="font" type="font/woff" crossorigin>
     <link rel="stylesheet" href="css/fonts.css">
@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="css/header-style.css">
     <link rel="stylesheet" href="css/intro-style.css?v=3">
     <link rel="stylesheet" href="css/portal-style.css?v=5">
-    <link rel="stylesheet" href="css/collection-style.css?v=5">
+    <link rel="stylesheet" href="css/collection-style.css?v=6">
     <link rel="stylesheet" href="css/cookies-style.css">
     <script type="importmap">
     {
@@ -72,18 +72,10 @@
             <div class="buy-side">
                 <h2 id="buy-title">Заказ</h2>
                 <fieldset class="choices">
-                    <legend>Какая пушка</legend>
+                    <legend>Сколько каких пушек (от 0 до 10 каждой)</legend>
                     <div id="buy-choices"></div>
                 </fieldset>
-                <div class="qty">
-                    <span class="qty-label" id="qty-label">Сколько штук</span>
-                    <div class="qty-box" role="group" aria-labelledby="qty-label">
-                        <button type="button" id="qty-minus" aria-label="Меньше">−</button>
-                        <input type="number" id="buy-qty" name="qty" form="buy-form" min="1" max="10" value="1" inputmode="numeric" aria-labelledby="qty-label">
-                        <button type="button" id="qty-plus" aria-label="Больше">+</button>
-                    </div>
-                </div>
-                <p class="total"><span>Итого</span><b id="buy-total">—</b></p>
+                <p class="total"><span id="buy-total-label">Итого</span><b id="buy-total">—</b></p>
             </div>
             <div class="buy-main">
                 <form id="buy-form" novalidate>
@@ -108,9 +100,9 @@
         <a href="privacy.html">Политика конфиденциальности</a>
         <a href="cookies.html">Политика cookies</a>
     </footer>
-    <script type="module" src="js/shop.js?v=5"></script>
+    <script type="module" src="js/shop.js?v=9"></script>
     <script src="js/portal.js?v=5" defer></script>
-    <script src="js/loader.js?v=3"></script>
+    <script src="js/loader.js?v=5"></script>
     <script src="js/cookies.js" defer></script>
     <script src="js/egg.js?v=2" defer></script>
 </body>

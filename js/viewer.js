@@ -153,6 +153,7 @@ export class GunViewer {
         this.applyExplode(smooth(this.t));
         this.ready = true;
         this.size();
+        this.renderer.render(this.scene, this.camera);   /* прогрев: шейдеры и текстуры готовы до первого показа */
         startLoop();
         viewers.add(this);
     }

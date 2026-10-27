@@ -9,6 +9,7 @@
     --amber: #ffbd72;
     --sticker: #f4e84a;
     --pink: #ff56b8;
+    --yellow: #ffd21f;
     --accent: var(--green);
     --accent-rgb: 168, 232, 74;
     --glow-rgb: 90, 220, 70;
@@ -132,4 +133,16 @@ h2 em {
     --side-rgb: 190, 40, 130;
     --stage-bg: #0d070c;
     --btn-bg: #160a12;
+}
+
+/* жёлтый акцент */
+[data-accent="yellow"] {
+    --accent: var(--yellow);
+    --accent-rgb: 255, 210, 31;
+    --glow-rgb: 255, 190, 20;
+    --grid-rgb: 255, 232, 130;
+    --wash-rgb: 120, 92, 8;
+    --side-rgb: 190, 145, 16;
+    --stage-bg: #0d0b06;
+    --btn-bg: #161208;
 }

@@ -516,10 +516,9 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 14px;
+    padding: 10px 12px 10px 14px;
     margin-bottom: 8px;
     border: 1px solid rgba(255, 255, 255, .18);
-    cursor: pointer;
     transition: border-color .15s, background .15s;
 }
 
@@ -527,25 +526,38 @@
     border-color: rgba(var(--accent-rgb), .6)
 }
 
-.choice:has(input:checked) {
+.choice.is-on {
     border-color: var(--accent);
     background: rgba(var(--accent-rgb), .09)
 }
 
-.choice:has(input:focus-visible) {
+.choice:focus-within {
     outline: 2px solid var(--cyan);
     outline-offset: 2px
 }
 
-.choice input {
-    accent-color: var(--accent);
-    width: 16px;
-    height: 16px;
-    margin: 0
+.choice-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px
+}
+
+.choice .qty-box {
+    flex: none
+}
+
+.choice .qty-box button {
+    width: 36px;
+    height: 38px
+}
+
+.choice .qty-box input {
+    width: 46px
 }
 
 .choice-name {
-    flex: 1;
     font-weight: 700;
     font-size: 14px
 }

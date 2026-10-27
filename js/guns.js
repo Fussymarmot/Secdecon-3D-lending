@@ -68,6 +68,33 @@ export const GUNS = [
         explode: 1,
         view: { azimuth: 38, elevation: 22 }
     },
-    { id: 'pushka3', name: 'Портальная пушка №3', heading: 'Пушка №3', short: 'Скоро', model: null },
+    {
+        id: 'pushka3',
+        name: 'Infinite Multiverse Portal Gun',
+        heading: 'Infinite Multiverse',
+        short: 'Portal Gun',
+        tagline: 'Жёлтая, ведёт по всей мультивселенной',
+        sticker: 'модель 03',
+        accent: 'yellow',
+        price: 4990,
+        model: 'models/pushka3.glb',
+        lead: 'Жёлтая пушка, с которой можно перемещаться по всей мультивселенной, а не по одной кривой. Под стеклянной колбой светится энергоядро, рядом батарея, резистор и преобразователь. Спереди массивный ствол, по бокам ряд сигнальных ламп, а запуск — кнопкой под корпусом.',
+        facts: [
+            'Перемещает по всей мультивселенной',
+            'Светящееся жёлтое энергоядро в колбе',
+            'Ряд сигнальных ламп на корпусе'
+        ],
+        parts: [
+            { id: 'trunk', nodes: ['trunk'], title: 'Ствол', text: 'Жёлтый излучатель, из которого открывается портал.' },
+            { id: 'capsule', nodes: ['capsule', 'sphere'], title: 'Колба с энергоядром', text: 'Стеклянный купол со светящимся шаром внутри, он питает портал.' },
+            { id: 'parts', nodes: ['battery', 'resistor', 'converter'], title: 'Батарея и электроника', text: 'Батарея, резистор и преобразователь под стеклом.' },
+            { id: 'lamps', nodes: ['light_bulbs'], title: 'Сигнальные лампы', text: 'Ряд ламп поперёк корпуса.' },
+            { id: 'button', nodes: ['button'], title: 'Кнопка', text: 'Нажми, и портал открыт.' },
+            { id: 'body', nodes: ['body'], title: 'Корпус', text: 'Основа конструкции с рукоятью.' }
+        ],
+        light: { rim: 0xffd84a, glowNode: 'sphere', glow: 0xffc21a, highlight: 0xffd21f },
+        explode: 1,
+        view: { azimuth: 38, elevation: 22 }
+    },
     { id: 'pushka4', name: 'Портальная пушка №4', heading: 'Пушка №4', short: 'Скоро', model: null }
 ];

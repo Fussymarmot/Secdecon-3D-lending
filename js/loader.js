@@ -5,7 +5,7 @@
     if (!root.classList.contains('is-loading')) { return; }
 
     var MIN_SHOW = 1100;   /* мин паказ */
-    var MAX_WAIT = 5000;   /*макс показ */
+    var MAX_WAIT = 15000;  /*макс показ (шрифты + 3D-модели) */
     var started = Date.now();
     var finished = false;
 
@@ -49,11 +49,26 @@
         ]).catch(function () {});
     }
 
+    /* 3D-модели: shop.js вызывает window.__modelsDone(), когда все .glb загружены (или не удалось) */
+    var models = new Promise(function (resolve) { window.__modelsDone = resolve; });
+
     var loaded = new Promise(function (resolve) {
         if (document.readyState === 'complete') { resolve(); }
         else { window.addEventListener('load', resolve); }
     });
 
-    Promise.all([fonts(), loaded]).then(leave);
+    /* картинки портала (кадры рамки, спираль): ждём декодирования и пару кадров отрисовки */
+    var portalImgs = loaded.then(function () {
+        var imgs = Array.prototype.slice.call(document.querySelectorAll('#portal img'));
+        return Promise.all(imgs.map(function (img) {
+            return img.decode ? img.decode().catch(function () {}) : Promise.resolve();
+        })).then(function () {
+            return new Promise(function (resolve) {
+                requestAnimationFrame(function () { requestAnimationFrame(resolve); });
+            });
+        });
+    });
+
+    Promise.all([fonts(), loaded, models, portalImgs]).then(leave);
     setTimeout(leave, MAX_WAIT);
 })();

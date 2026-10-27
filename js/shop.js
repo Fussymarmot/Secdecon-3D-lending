@@ -1,5 +1,5 @@
-import { GUNS, SHOP } from './guns.js?v=2';
-import { GunViewer } from './viewer.js?v=3';
+import { GUNS, SHOP } from './guns.js?v=3';
+import { GunViewer, loadModel } from './viewer.js?v=4';
 
 const $ = (s, r) => (r || document).querySelector(s);
 const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
@@ -8,12 +8,16 @@ const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&
 
 const sale = GUNS.filter((g) => g.model);
 
+/* грузим все модели сразу, пока показывается загрузочный экран (кэш общий с просмотрщиком) */
+Promise.all(sale.map((g) => loadModel(g.model).catch((err) => console.error(err))))
+    .then(() => { if (window.__modelsDone) { window.__modelsDone(); } });
 
-function whenNear(el, fn) {
+
+function whenNear(el, fn, margin) {
     if (!('IntersectionObserver' in window)) { fn(); return; }
     const io = new IntersectionObserver((es) => {
         if (es[0].isIntersecting) { io.disconnect(); fn(); }
-    }, { rootMargin: '500px' });
+    }, { rootMargin: (margin || 500) + 'px' });
     io.observe(el);
 }
 
@@ -106,7 +110,7 @@ function buildCard(g) {
             stage.classList.remove('is-loading');
             stage.dataset.state = 'error';
         });
-    });
+    }, 2500);  /* карточки внизу готовим заранее, чтобы к моменту прокрутки они уже были */
 
     const shot = $('.card-shot', el);
     el.addEventListener('pointerenter', () => {
@@ -128,21 +132,44 @@ function buildCard(g) {
 const dlg = $('#buy');
 const form = $('#buy-form');
 const choices = $('#buy-choices');
-const qty = $('#buy-qty');
 const phone = $('#buy-phone');
-let current = sale.length ? sale[0].id : null;
+const MAX_QTY = 10;
+const clampQty = (v) => Math.max(0, Math.min(MAX_QTY, parseInt(v, 10) || 0));
+/* сколько штук каждой пушки в заказе: { pushka1: 5, pushka2: 1, pushka3: 0 } */
+const counts = {};
+sale.forEach((g) => { counts[g.id] = 0; });
+let current = sale.length ? sale[0].id : null;   /* последняя тронутая пушка: по ней красится окно */
+
+const totalQty = () => sale.reduce((n, g) => n + counts[g.id], 0);
+const totalSum = () => sale.reduce((n, g) => n + counts[g.id] * g.price, 0);
 
 function renderChoices() {
     choices.innerHTML = sale.map((g) =>
-        '<label class="choice" data-accent="' + (g.accent || 'green') + '"><input type="radio" name="gun" value="' + g.id + '"' + (g.id === current ? ' checked' : '') + '>' +
-        '<span class="choice-name">' + esc(g.name) + '</span><span class="choice-price">' + money(g.price) + '</span></label>'
+        '<div class="choice" data-gun="' + g.id + '" data-accent="' + (g.accent || 'green') + '">' +
+            '<span class="choice-info"><span class="choice-name">' + esc(g.name) + '</span>' +
+            '<span class="choice-price">' + money(g.price) + '</span></span>' +
+            '<div class="qty-box" role="group" aria-label="Количество: ' + esc(g.name) + '">' +
+                '<button type="button" data-step="-1" aria-label="Меньше: ' + esc(g.name) + '">−</button>' +
+                '<input type="number" min="0" max="' + MAX_QTY + '" value="' + counts[g.id] + '" inputmode="numeric" data-gun="' + g.id + '" aria-label="Сколько штук: ' + esc(g.name) + '">' +
+                '<button type="button" data-step="1" aria-label="Больше: ' + esc(g.name) + '">+</button>' +
+            '</div>' +
+        '</div>'
     ).join('');
 }
+/* обновляет подсветку строк, итог и цвет окна (поля ввода не трогает, пока в них печатают) */
 function recalc() {
     const g = sale.find((x) => x.id === current);
-    const n = Math.max(1, Math.min(10, parseInt(qty.value, 10) || 1));
-    $('#buy-total').textContent = g ? money(g.price * n) : '—';
-    dlg.dataset.accent = (g && g.accent) || '';   /* окно заказа красится в цвет выбранной пушки */
+    $$('.choice', choices).forEach((row) => {
+        const n = counts[row.dataset.gun];
+        row.classList.toggle('is-on', n > 0);
+        const inp = $('input', row);
+        if (document.activeElement !== inp) { inp.value = n; }
+    });
+    const n = totalQty();
+    $('#buy-total').textContent = n ? money(totalSum()) : '—';
+    $('#buy-total-label').textContent = n ? 'Итого, ' + n + '\u00a0шт.' : 'Итого';
+    dlg.dataset.accent = (g && g.accent) || '';   /* окно заказа красится в цвет последней выбранной пушки */
+    if (dlg.open) { cards.forEach((c, k) => c.classList.toggle('is-picked', counts[k] > 0)); }
     saveDraft();
 }
 
@@ -157,8 +184,8 @@ function saveDraft() {
         localStorage.setItem(DRAFT_KEY, JSON.stringify({
             t: Date.now(),
             open: dlg.open,
-            gun: current,
-            qty: qty.value,
+            counts: counts,
+            cur: current,
             name: field('name').value,
             phone: phone.value,
             address: field('address').value,
@@ -173,9 +200,13 @@ function restoreDraft() {
     let d = null;
     try { d = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null'); } catch (e) { d = null; }
     if (!d || !d.t || Date.now() - d.t > DRAFT_TTL) { clearDraft(); return; }
-    if (!sale.some((g) => g.id === d.gun)) { return; }
-    current = d.gun;
-    qty.value = Math.max(1, Math.min(10, parseInt(d.qty, 10) || 1));
+    if (d.counts && typeof d.counts === 'object') {
+        sale.forEach((g) => { counts[g.id] = clampQty(d.counts[g.id]); });
+    } else if (sale.some((g) => g.id === d.gun)) {      /* старый черновик: одна пушка и общее количество */
+        counts[d.gun] = clampQty(d.qty) || 1;
+    } else { return; }
+    const cur = d.cur || d.gun;
+    if (sale.some((g) => g.id === cur)) { current = cur; }
     field('name').value = d.name || '';
     field('address').value = d.address || '';
     field('comment').value = d.comment || '';
@@ -183,29 +214,43 @@ function restoreDraft() {
     phone.dataset.prev = phone.value;
     renderChoices();
     recalc();
-    if (d.open) { openBuy(current); }
+    if (d.open) { showBuy(); }
 }
-function openBuy(id) {
-    if (!sale.some((g) => g.id === id)) { return; }
-    current = id;
+function showBuy() {
     renderChoices();
     recalc();
     $('#buy-done').hidden = true;
     form.hidden = false;
-    cards.forEach((c, k) => c.classList.toggle('is-picked', k === id));
+    $('#buy-error').hidden = true;
     dlg.showModal();
+    recalc();
     saveDraft();
 }
-choices.addEventListener('change', (e) => {
-    if (e.target.name === 'gun') {
-        current = e.target.value;
-        recalc();
-        cards.forEach((c, k) => c.classList.toggle('is-picked', k === current));
-    }
+/* кнопка «Купить» у пушки: добавляет её в заказ, если там её ещё нет */
+function openBuy(id) {
+    if (!sale.some((g) => g.id === id)) { return; }
+    current = id;
+    if (counts[id] === 0) { counts[id] = 1; }
+    showBuy();
+}
+function setCount(id, n) {
+    counts[id] = clampQty(n);
+    current = id;
+    $('#buy-error').hidden = true;
+    recalc();
+}
+choices.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-step]');
+    if (!btn) { return; }
+    const id = btn.closest('.choice').dataset.gun;
+    setCount(id, counts[id] + parseInt(btn.dataset.step, 10));
 });
-$('#qty-minus').addEventListener('click', () => { qty.value = Math.max(1, (parseInt(qty.value, 10) || 1) - 1); recalc(); });
-$('#qty-plus').addEventListener('click', () => { qty.value = Math.min(10, (parseInt(qty.value, 10) || 1) + 1); recalc(); });
-qty.addEventListener('input', recalc);
+choices.addEventListener('input', (e) => {
+    if (e.target.dataset && e.target.dataset.gun) { setCount(e.target.dataset.gun, e.target.value); }
+});
+choices.addEventListener('change', (e) => {      /* когда поле потеряло фокус, показываем исправленное число */
+    if (e.target.dataset && e.target.dataset.gun) { e.target.value = counts[e.target.dataset.gun]; }
+});
 $('#buy-close').addEventListener('click', () => dlg.close());
 $('#buy-done-close').addEventListener('click', () => dlg.close());
 dlg.addEventListener('click', (e) => { if (e.target === dlg) { dlg.close(); } });
@@ -254,12 +299,21 @@ form.addEventListener('submit', async (e) => {
     e.preventDefault();
     phone.setCustomValidity(phoneError(phoneDigits(phone.value)));
     if (!form.reportValidity()) { return; }
-    const g = sale.find((x) => x.id === current);
+    const err = $('#buy-error');
+    if (!totalQty()) {
+        err.textContent = 'Выбери хотя бы одну пушку: укажи, сколько штук нужно.';
+        err.hidden = false;
+        return;
+    }
     const fd = new FormData(form);
+    const items = sale.filter((g) => counts[g.id] > 0).map((g) => ({
+        gun: g.id, gunName: g.name, quantity: counts[g.id], price: g.price, sum: g.price * counts[g.id]
+    }));
+    const summary = items.map((i) => i.quantity + ' × ' + i.gunName).join(', ');
     const order = {
-        gun: g.id, gunName: g.name,
-        quantity: Math.max(1, Math.min(10, parseInt(qty.value, 10) || 1)),
-        total: g.price * Math.max(1, Math.min(10, parseInt(qty.value, 10) || 1)),
+        items: items,
+        quantity: totalQty(),
+        total: totalSum(),
         name: String(fd.get('name') || '').trim(),
         phone: '+7' + phoneDigits(phone.value),
         address: String(fd.get('address') || '').trim(),
@@ -268,7 +322,6 @@ form.addEventListener('submit', async (e) => {
     };
     const btn = $('button[type=submit]', form);
     btn.disabled = true;
-    const err = $('#buy-error');
     err.hidden = true;
     try {
         if (SHOP.orderEndpoint) {
@@ -280,14 +333,14 @@ form.addEventListener('submit', async (e) => {
             console.info('Заказ (демо-режим, сервер не подключён):', order);
         }
         $('#buy-done-text').textContent = SHOP.orderEndpoint
-            ? 'Заказ на «' + g.name + '» отправлен. Мы позвоним на ' + phoneFormat(phoneDigits(order.phone)) + ', как только он будет принят.'
-            : 'Форма работает в демо-режиме: заказ на «' + g.name + '» никуда не отправлен, потому что адрес приёма заказов ещё не указан.';
+            ? 'Заказ отправлен: ' + summary + '. Мы позвоним на ' + phoneFormat(phoneDigits(order.phone)) + ', как только он будет принят.'
+            : 'Форма работает в демо-режиме: заказ (' + summary + ') никуда не отправлен, потому что адрес приёма заказов ещё не указан.';
         form.hidden = true;
         $('#buy-done').hidden = false;
         clearDraft();
         form.reset();
         phone.dataset.prev = '';
-        qty.value = 1;
+        sale.forEach((g) => { counts[g.id] = 0; });
         recalc();
     } catch (ex) {
         console.error(ex);

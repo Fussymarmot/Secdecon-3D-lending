@@ -26,7 +26,13 @@ html.loader-out .loader {
 }
 
 html.is-loading:not(.loader-out) .portal-stage {
-    animation-play-state: paused
+    animation: none;
+    opacity: .01
+}
+
+html.is-loading:not(.loader-out) .portal-rim img {
+    animation: none;
+    opacity: 1
 }
 
 .loader-portal {
