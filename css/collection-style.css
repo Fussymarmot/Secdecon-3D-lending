@@ -815,10 +815,23 @@
         transform: rotate(-2deg)
     }
 
+    /* стикер остаётся справа от слова, чуть компактнее */
     .h2-tilt .sticker {
+        left: calc(100% + 10px);
+        bottom: .2em;
+        font-size: 11px
+    }
+
+    /* в галерее заголовок переносится на две строки: стикер кладём в свободное место справа от первой строки */
+    .gallery {
+        overflow-x: clip
+    }
+
+    .gallery .h2-tilt .sticker {
         left: auto;
-        right: -6px;
-        bottom: -1.1em
+        right: 0;
+        bottom: auto;
+        top: .35em
     }
 
     .gun-actions {
