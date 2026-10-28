@@ -26,14 +26,12 @@
 .logo-mark {
     display: grid;
     place-items: center;
-    width: 27px;
+    width: 15px;
     height: 27px;
-    border: 1px solid var(--green);
-    border-radius: 50%;
     color: var(--green);
     font-family: var(--font-mono);
-    font-size: 15px;
-    transform: rotate(-9deg) translateY(1px)
+    font-size: 18px;
+    margin-right: -12px;
 }
 
 .logo-light {
