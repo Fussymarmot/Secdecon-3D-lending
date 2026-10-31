@@ -3,19 +3,19 @@
     --panel: #0b1215;
     --text: #eef8f3;
     --muted: #8b9e98;
-    --green: #a8e84a;
-    --cyan: #6be9f5;
+    --green: #9EFF00;
+    --cyan: #3EF8F5;
     --purple: #d39aff;
     --amber: #ffbd72;
     --sticker: #f4e84a;
-    --pink: #ff56b8;
-    --yellow: #ffd21f;
+    --pink: #FF007F;
+    --yellow: #E1FF00;
     --accent: var(--green);
-    --accent-rgb: 168, 232, 74;
-    --glow-rgb: 90, 220, 70;
-    --grid-rgb: 142, 255, 187;
-    --wash-rgb: 40, 120, 40;
-    --side-rgb: 60, 170, 50;
+    --accent-rgb: 158, 255, 0;
+    --glow-rgb: 158, 255, 0;
+    --grid-rgb: 158, 255, 0;
+    --wash-rgb: 65, 0, 115;
+    --side-rgb: 65, 0, 115;
     --stage-bg: #070d0f;
     --btn-bg: #0d140f;
     --font-head: 'Oswald', 'Arial Narrow', Impact, sans-serif;
@@ -120,17 +120,17 @@ h2 em {
 /* строка выбора */
 [data-accent="green"] {
     --accent: var(--green);
-    --accent-rgb: 168, 232, 74;
+    --accent-rgb: 158, 255, 0;
 }
 
 /* розовый акцент  */
 [data-accent="pink"] {
     --accent: var(--pink);
-    --accent-rgb: 255, 86, 184;
-    --glow-rgb: 255, 60, 170;
-    --grid-rgb: 255, 170, 220;
-    --wash-rgb: 130, 24, 92;
-    --side-rgb: 190, 40, 130;
+    --accent-rgb: 255, 0, 127;
+    --glow-rgb: 255, 0, 127;
+    --grid-rgb: 255, 0, 127;
+    --wash-rgb: 65, 0, 115;
+    --side-rgb: 65, 0, 115;
     --stage-bg: #0d070c;
     --btn-bg: #160a12;
 }
@@ -138,11 +138,11 @@ h2 em {
 /* жёлтый акцент */
 [data-accent="yellow"] {
     --accent: var(--yellow);
-    --accent-rgb: 255, 210, 31;
-    --glow-rgb: 255, 190, 20;
-    --grid-rgb: 255, 232, 130;
-    --wash-rgb: 120, 92, 8;
-    --side-rgb: 190, 145, 16;
+    --accent-rgb: 225, 255, 0;
+    --glow-rgb: 225, 255, 0;
+    --grid-rgb: 225, 255, 0;
+    --wash-rgb: 65, 0, 115;
+    --side-rgb: 65, 0, 115;
     --stage-bg: #0d0b06;
     --btn-bg: #161208;
 }
@@ -150,11 +150,11 @@ h2 em {
 /* бирюзовый акцент */
 [data-accent="cyan"] {
     --accent: var(--cyan);
-    --accent-rgb: 107, 233, 245;
-    --glow-rgb: 40, 215, 235;
-    --grid-rgb: 150, 245, 250;
-    --wash-rgb: 12, 96, 110;
-    --side-rgb: 28, 160, 180;
+    --accent-rgb: 62, 248, 245;
+    --glow-rgb: 62, 248, 245;
+    --grid-rgb: 62, 248, 245;
+    --wash-rgb: 65, 0, 115;
+    --side-rgb: 65, 0, 115;
     --stage-bg: #060d10;
     --btn-bg: #08151a;
 }

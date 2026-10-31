@@ -249,8 +249,8 @@ export class GunViewer {
             while (up && up !== this.model) { if (names.indexOf(up.name) !== -1) { on = true; break; } up = up.parent; }
             var b = m.userData.base, lit = b.e.r + b.e.g + b.e.b > 0.01;
             if (on) {
-                if (lit) { m.emissiveIntensity = b.i * 1.8; }
-                else { m.emissive.set(this.light.highlight != null ? this.light.highlight : 0x3dff5a); m.emissiveIntensity = 0.3; }
+                if (lit) { m.emissiveIntensity = b.i * 3.2; }
+                else { m.emissive.set(this.light.highlight != null ? this.light.highlight : 0x3dff5a); m.emissiveIntensity = 2.5; }
             } else { m.emissive.copy(b.e); m.emissiveIntensity = b.i; }
         }.bind(this));
     }

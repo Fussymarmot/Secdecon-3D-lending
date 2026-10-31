@@ -37,7 +37,7 @@ export const GUNS = [
             { id: 'emitters', nodes: ['emitter_1', 'emitter_2', 'emitter_3'], title: 'Излучатели ×3', text: 'Три ствола с зелёными линзами.' },
             { id: 'body', nodes: ['body'], title: 'Корпус', text: 'Основа всей конструкции.' }
         ],
-        light: { rim: 0x7dffb0, glowNode: 'flask', glow: 0x6dff3a, highlight: 0x3dff5a },
+        light: { rim: 0x9eff00, glowNode: 'flask', glow: 0x9eff00, highlight: 0x687582 },
         explode: 1,                         /* насколько разлетаются детали */
         view: { azimuth: 38, elevation: 22 } /* стартовый ракурс в разделе */
     },
@@ -64,7 +64,7 @@ export const GUNS = [
            
             { id: 'button', nodes: ['button'], title: 'Спусковой крючок', text: 'Крючок для запуска портала.' }
         ],
-        light: { rim: 0xff86d2, glowNode: 'trunk', glow: 0xff3ea6, highlight: 0xff4db8 },
+        light: { rim: 0xff007f, glowNode: 'trunk', glow: 0xff007f, highlight: 0x687582 },
         explode: 1,
         view: { azimuth: 38, elevation: 22 }
     },
@@ -92,7 +92,7 @@ export const GUNS = [
             { id: 'button', nodes: ['button'], title: 'Спусковой крючок', text: 'Крючок для создания портала.' },
             { id: 'body', nodes: ['body'], title: 'Корпус', text: 'Основа конструкции с рукоятью.' }
         ],
-        light: { rim: 0xffd84a, glowNode: 'sphere', glow: 0xffc21a, highlight: 0xffd21f },
+        light: { rim: 0xe1ff00, glowNode: 'sphere', glow: 0xe1ff00, highlight: 0x687582 },
         explode: 1,
         view: { azimuth: 38, elevation: 22 }
     },
@@ -118,7 +118,7 @@ export const GUNS = [
             { id: 'mount', nodes: ['holder', 'lid'], title: 'Крышка и крепление', text: 'Сидят на заднем конце и держат горловину колбы.' },
             { id: 'frame', nodes: ['frame'], title: 'Рама', text: 'Плоская рама с вырезом под колбу, основа всей конструкции.' }
         ],
-        light: { rim: 0x6be9f5, glowNode: 'flask', glow: 0x2de8ff, highlight: 0x2fe6ff },
+        light: { rim: 0x3ef8f5, glowNode: 'flask', glow: 0x3ef8f5, highlight: 0x687582 },
         explode: 1,
         view: { azimuth: 38, elevation: 22 }
     }

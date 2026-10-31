@@ -14,7 +14,7 @@
     color: var(--text);
     font: 500 13px/1 var(--font-mono);
     letter-spacing: .04em;
-    box-shadow: 5px 5px 0 var(--accent);
+    box-shadow: 5px 5px 0 color-mix(in srgb, var(--accent) 48%, #000);
     cursor: pointer;
     transform: rotate(-1.2deg);
     transition: transform .15s, box-shadow .15s;
@@ -22,7 +22,7 @@
 
 .btn:hover {
     transform: rotate(-1.2deg) translate(3px, 3px);
-    box-shadow: 2px 2px 0 var(--accent)
+    box-shadow: 2px 2px 0 color-mix(in srgb, var(--accent) 48%, #000)
 }
 
 .btn:focus-visible {
@@ -50,7 +50,7 @@
 .btn--small {
     padding: 11px 14px;
     font-size: 12px;
-    box-shadow: 4px 4px 0 rgba(var(--accent-rgb), .55)
+    box-shadow: 4px 4px 0 color-mix(in srgb, var(--accent) 48%, #000)
 }
 
 .btn:disabled {
