@@ -96,5 +96,30 @@ export const GUNS = [
         explode: 1,
         view: { azimuth: 38, elevation: 22 }
     },
-    { id: 'pushka4', name: 'Портальная пушка №4', heading: 'Пушка №4', short: 'Скоро', model: null }
+    {
+        id: 'pushka4',
+        name: 'Interspatial Portal Gun',
+        heading: 'Interspatial',
+        short: 'Portal Gun',
+        tagline: 'Бирюзовая, телепортирует по всей планете',
+        sticker: 'модель 04',
+        accent: 'cyan',
+        price: 4990,
+        model: 'models/pushka4.glb',
+        lead: 'Бирюзовая пушка, всё устройство на виду. С данной пушкой можно телепортироваться в пределах планеты. Спереди масивный ствол выходящий из колбы с светящимся стержнем.',
+        facts: [
+            'Открытая рама без кожуха',
+            'Стеклянная колба со светящимся стержнем',
+            'Преобразователь, оплетённый проводами'
+        ],
+        parts: [
+            { id: 'wires', nodes: ['wires'], title: 'Преобразователь', text: 'Преобразует энергию и провода вокруг него.' },
+            { id: 'flask', nodes: ['flask'], title: 'Колба и дуло', text: 'Стеклянная колба с дулом, внутри которой светится бирюзовый стержень.' },
+            { id: 'mount', nodes: ['holder', 'lid'], title: 'Крышка и крепление', text: 'Сидят на заднем конце и держат горловину колбы.' },
+            { id: 'frame', nodes: ['frame'], title: 'Рама', text: 'Плоская рама с вырезом под колбу, основа всей конструкции.' }
+        ],
+        light: { rim: 0x6be9f5, glowNode: 'flask', glow: 0x2de8ff, highlight: 0x2fe6ff },
+        explode: 1,
+        view: { azimuth: 38, elevation: 22 }
+    }
 ];

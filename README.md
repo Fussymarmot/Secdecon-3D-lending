@@ -44,5 +44,6 @@ python3 -m http.server 8000
 - `js/portal.js`, `js/loader.js` — портал в интро и загрузочный экран
 - `css/collection-style.css` — стили новых блоков
 - `models/pushka1.glb` — Interdimensional Portal Gun (зелёная)
+- `models/pushka4.glb` — Open Frame Portal Gun (бирюзовая, `accent: 'cyan'`), собрана из `Pushka4.blend`: узлы `frame` (рама), `flask` (колба со светящимся стержнем), `holder` и `lid` (крепление и крышка сзади), `wires` (излучатель с проводами); модификаторы применены (Solidify у колбы, Smooth by Angle 30°)
 - `models/pushka3.glb` — Infinite Multiverse Portal Gun (жёлтая, `accent: 'yellow'`), собрана из `Pushka3.blend`: узлы `body`, `trunk` (ствол), `capsule`, `sphere` (энергоядро), `battery`, `resistor`, `converter`, `light_bulbs`, `button`
 - `models/pushka2.glb` — See-through Portal Gun (розовая), собрана из `Pushka2.blend`: модификаторы применены, узлы `lid`, `trunk` (ствол), `frame`, `handle`, `button`

@@ -146,3 +146,15 @@ h2 em {
     --stage-bg: #0d0b06;
     --btn-bg: #161208;
 }
+
+/* бирюзовый акцент */
+[data-accent="cyan"] {
+    --accent: var(--cyan);
+    --accent-rgb: 107, 233, 245;
+    --glow-rgb: 40, 215, 235;
+    --grid-rgb: 150, 245, 250;
+    --wash-rgb: 12, 96, 110;
+    --side-rgb: 28, 160, 180;
+    --stage-bg: #060d10;
+    --btn-bg: #08151a;
+}

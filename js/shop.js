@@ -1,4 +1,4 @@
-import { GUNS, SHOP } from './guns.js?v=3';
+import { GUNS, SHOP } from './guns.js?v=4';
 import { GunViewer, loadModel } from './viewer.js?v=4';
 
 const $ = (s, r) => (r || document).querySelector(s);
